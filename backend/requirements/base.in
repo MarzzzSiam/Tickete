@@ -1,0 +1,12 @@
+Django>=5.2,<5.3
+djangorestframework>=3.16,<4
+djangorestframework-simplejwt>=5.5,<6
+django-cors-headers>=4.7,<5
+django-environ>=0.12,<1
+drf-spectacular>=0.28,<1
+psycopg[binary]>=3.2,<4
+celery[redis]>=5.5,<6
+argon2-cffi>=25,<26
+httpx>=0.28,<1
+qrcode[pil]>=8,<9
+weasyprint>=66,<70

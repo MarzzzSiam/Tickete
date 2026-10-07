@@ -1,0 +1,9 @@
+from typing import Any, Protocol
+
+
+class PaymentGateway(Protocol):
+    """Provider boundary; dummy implementation and typed domain results arrive in Phase 2."""
+
+    def initiate(self, order: Any) -> Any: ...
+    def verify_otp(self, payment: Any, otp: str) -> Any: ...
+    def status(self, payment: Any) -> Any: ...

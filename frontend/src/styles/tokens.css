@@ -1,0 +1,42 @@
+:root {
+  --brand-500: #4e53ff;
+  --brand-700: #3838b8;
+  --brand-100: #e8e9ff;
+  --brand-50: #f5f5ff;
+  --background: #ffffff;
+  --ink: #0a0a14;
+  --muted: #5b5f73;
+  --line: #e3e4ec;
+  --success: #12b76a;
+  --warning: #f5a524;
+  --danger: #e5484d;
+  --highlight: #ffd43b;
+  --pink-accent: #ff5fa2;
+  --success-text: #07633a;
+  --danger-text: #a31c23;
+  --warning-text: #754600;
+  --shadow: 4px 4px 0 var(--ink);
+  --shadow-lg: 7px 7px 0 var(--ink);
+  --radius-card: 20px;
+  --radius-control: 10px;
+  --radius-pill: 999px;
+  --overlay: rgb(10 10 20 / 45%);
+}
+@theme inline {
+  --color-brand: var(--brand-500);
+  --color-brand-deep: var(--brand-700);
+  --color-brand-tint: var(--brand-100);
+  --color-brand-wash: var(--brand-50);
+  --color-background: var(--background);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-highlight: var(--highlight);
+  --color-pink-accent: var(--pink-accent);
+  --font-sans: var(--font-inter);
+  --font-serif: var(--font-playfair);
+  --font-mono: var(--font-jetbrains);
+}

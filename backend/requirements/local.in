@@ -1,0 +1,8 @@
+-r base.in
+pytest>=8,<10
+pytest-django>=4.11,<5
+pytest-cov>=6,<8
+ruff>=0.12,<1
+black>=25,<27
+pip-tools>=7.4,<8
+pre-commit>=4,<5

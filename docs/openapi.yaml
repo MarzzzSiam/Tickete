@@ -1,0 +1,34 @@
+openapi: 3.0.3
+info:
+  title: TICKETÉ API
+  version: 0.1.0
+  description: Phase 0 foundation. Business endpoints are not implemented yet.
+paths:
+  /api/v1/health/:
+    get:
+      operationId: health_retrieve
+      description: Process liveness only; not database readiness.
+      tags:
+      - health
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Health'
+          description: ''
+components:
+  schemas:
+    Health:
+      type: object
+      properties:
+        status:
+          type: string
+        service:
+          type: string
+        version:
+          type: string
+      required:
+      - service
+      - status
+      - version
