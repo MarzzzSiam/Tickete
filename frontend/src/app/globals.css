@@ -483,7 +483,7 @@ svg {
 .scene-sticker {
   position: absolute;
   z-index: 3;
-  right: -1%;
+  right: 12px;
   bottom: 38px;
   background: var(--highlight);
   border: 2px solid var(--ink);
@@ -1395,7 +1395,7 @@ h2 {
     font-size: 6px;
   }
   .scene-sticker {
-    right: 0;
+    right: 12px;
     bottom: 22px;
     font-size: 7px;
     padding: 9px 10px;
