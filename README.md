@@ -4,7 +4,7 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
-2026-10-14: design approved; Phase 0 foundation implemented and locally reviewed. The user selected Supabase PostgreSQL and hosted Redis after local Docker setup failed. Follow [development without Docker](docs/12-cloud-development.md). Cloud connections, PostgreSQL migrations, database tests and Redis/worker integration remain pending. No deployment exists.
+2026-10-14: design approved; Phase 0 foundation implemented and locally reviewed. The user selected Supabase PostgreSQL and hosted Redis after local Docker setup failed. Follow [development without Docker](docs/12-cloud-development.md). Supabase PostgreSQL connectivity is verified and all 19 initial Django migrations are applied, with none pending. Isolated database tests and Redis/worker integration remain pending. No deployment exists.
 
 Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs/05-system-design.md), and [task breakdown](docs/07-task-breakdown.md). The user confirmed ticket caps per order AND per buyer email across an event; see [decisions](docs/decisions/0001-source-reconciliation.md).
 
