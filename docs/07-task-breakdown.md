@@ -1,6 +1,6 @@
 # Task breakdown
 
-Status: implementation plan approved by the user on 2026-10-07. Phase 0 code and local preview checks delivered; infrastructure and visual sign-off remain pending. See `11-phase-0-review.md`.
+Status: implementation plan approved by the user on 2026-10-07. On 2026-10-14, Supabase connectivity and all 19 initial migrations were verified and foundation PR #1 was merged. Phase 0 Redis/worker setup is in progress; CI results and final visual sign-off remain to be recorded. See the dated history in the root README and `12-cloud-development.md` for current infrastructure steps; `11-phase-0-review.md` preserves the original review evidence.
 
 ## Preparation
 
