@@ -39,6 +39,50 @@ A hosted Linux Celery worker is a separate process, not something supplied by Su
 
 The worker command, run from `backend`, is `celery -A config worker --loglevel=INFO`. Verify that `apps.core.tasks.worker_ping` actually completes; publishing a task alone is insufficient. Native Windows Celery is not the supported deployment path. Ticket generation and email jobs remain later phases.
 
+### Render dashboard setup
+
+First create a Render account and choose **New > Key Value**:
+
+| Field | Value |
+|---|---|
+| Name | `tickete-dev-redis` |
+| Region | Singapore if available; use the same region for the worker |
+| Maxmemory policy | `noeviction` |
+| Plan | Review the displayed cost; use persistence for anything beyond disposable tests |
+
+Render currently uses Redis-compatible Valkey for new Key Value instances. Once available, configure the IP allow list and save the external TLS URI in the local `.env` as described above. Do not use its internal URI from Windows.
+
+After Redis readiness passes, create **New > Background Worker**, connect `MarzzzSiam/TICKETE`, and use these settings. The worker code must first be pushed to the selected branch. Review the displayed recurring worker cost before creating it.
+
+| Field | Value |
+|---|---|
+| Name | `tickete-dev-worker` |
+| Branch | `codex/hosted-worker-setup` for initial verification; switch to `main` after merge |
+| Root directory | `backend` |
+| Language/runtime | Python 3 |
+| Build command | `pip install -r requirements/production.txt` |
+| Start command | `celery -A config worker --loglevel=INFO --concurrency=1` |
+| Region | Same as Key Value |
+
+Set environment variables in Render's dashboard, not in Git:
+
+- `PYTHON_VERSION`: `3.12.14` (the version used for this foundation).
+- `DJANGO_SETTINGS_MODULE`: `config.settings.worker`.
+- `SECRET_KEY`: copy the generated value from the private development `.env`.
+- `DATABASE_URL`: the same Supabase development Session pooler URI, with `sslmode=require`.
+- `REDIS_URL`: the Key Value internal URI for this worker in the same Render region. The local API uses the external URI to the same instance.
+
+Worker settings disable debug, require explicit credentials, enforce PostgreSQL TLS and leave email disabled until its provider is integrated. No web service, public worker URL or Supabase GitHub integration is required. Native Python deployment of PDF rendering dependencies remains a separate Phase 2 check.
+
+From `backend` on Windows, verify the live task after deployment:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py check_services
+.\.venv\Scripts\python.exe manage.py check_worker --timeout 30
+```
+
+Only `Celery: task completed and result verified` proves the queue, worker execution and result backend worked together. The command sends a harmless expiring task and reports failures without connection credentials.
+
 Next.js and Django can run locally while the worker is pending. Storage integration, transactional email and production deployment are separate remaining setup tasks. No real payments or production data belong in this development project.
 
 ## References
