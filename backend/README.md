@@ -4,7 +4,9 @@ Python 3.12, Django 5.2 LTS, Django REST Framework, PostgreSQL, Celery/Redis. Ph
 
 ## Local setup (PowerShell)
 
-From the repository root, install Docker Desktop or run PostgreSQL 17 and Redis 7 locally. Then:
+For this workstation, follow [development without Docker](../docs/12-cloud-development.md): Supabase PostgreSQL first, then hosted Redis. Use `python manage.py check_services --service database` to verify PostgreSQL independently, or `--service redis` to verify Redis independently. The default checks both.
+
+For the alternative fully local setup, install Docker Desktop or run PostgreSQL 17 and Redis 7 locally. From the repository root:
 
 ```powershell
 docker compose up -d
