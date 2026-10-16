@@ -4,7 +4,7 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
-2026-10-16: Phase 0 infrastructure setup is in progress. Supabase PostgreSQL connectivity and all 19 initial migrations were verified. A hosted Redis PING succeeded after IP allow-list troubleshooting. Hosted-worker configuration passes Django checks, but the live task/result check has not succeeded. Worker deployment, isolated database tests and CI verification remain pending. Follow [development without Docker](docs/12-cloud-development.md).
+2026-10-16: Phase 1 authentication work started at the user's request. Cookie JWT authentication, explicit CSRF checks and the CSRF bootstrap endpoint are implemented and locally tested; signup/login and event publishing are not implemented yet. The user reports the Render worker deployed, but the live task check failed and a subsequent Redis readiness check also failed. Phase 0 infrastructure acceptance remains open alongside Phase 1 development. Supabase's 19 initial migrations were previously verified. Follow [development without Docker](docs/12-cloud-development.md) and the [Phase 1 authentication contract](docs/13-phase-1-authentication.md).
 
 Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs/05-system-design.md), and [task breakdown](docs/07-task-breakdown.md). The user confirmed ticket caps per order AND per buyer email across an event; see [decisions](docs/decisions/0001-source-reconciliation.md).
 
@@ -20,6 +20,7 @@ Keep this history when updating the current status. Append a dated entry for eac
 | 2026-10-14 | Phase 0 — GitHub | Foundation PR #1 merged into main; merge confirmed from the remote repository. | Independently inspect CI results. |
 | 2026-10-14 | Phase 0 — background jobs, in progress | Prepared hosted worker settings, task-result verification command and Render setup instructions. | Create Render services, configure credentials and verify a real job. No worker deployed yet. |
 | 2026-10-16 | Phase 0 — Redis and worker deployment | Hosted Redis PING succeeded after IP allow-list troubleshooting. Worker settings passed Django checks. A live task/result check failed; worker execution is not yet verified. | Deploy the Render background worker, then repeat the end-to-end task check. |
+| 2026-10-16 | Phase 1 — authentication started | User requested progression after reporting worker deployment. Implemented cookie JWT authentication, CSRF bootstrap and unsafe-request CSRF checks. Twelve security tests pass; OpenAPI updated. | Registration, login/refresh/logout, verification/reset, profile and event publishing. Redis connectivity regressed; deployed worker execution remains unverified. |
 
 Phase 1 (authentication and event publishing) follows foundation acceptance. Phases 2–4 cover purchases/delivery, venue operations, then reporting and launch; see the task breakdown for acceptance criteria.
 

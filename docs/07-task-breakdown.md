@@ -25,6 +25,8 @@ Done when both apps run, README setup is tested, database connection status is e
 
 ## Phase 1 — event publishing (MVP)
 
+2026-10-16: started at the user's request following reported worker deployment. First increment implements cookie JWT authentication and CSRF bootstrap/enforcement with twelve passing security tests. Signup/login, recovery and business APIs remain pending. See `13-phase-1-authentication.md`. Phase 0 live worker/Redis acceptance is still open and tracked separately.
+
 1. Implement User and authentication backend first: registration, verification, login/refresh/logout cookies, reset, profile, CSRF, throttles and permission tests. Connect forms after API contracts stabilize.
 2. Implement event/category/custom-field models and migrations, validation, draft edits/preview and submission. Build the four-step creation UI against those endpoints.
 3. Implement admin queue, approve/reject transitions, unique public slug, notifications and proposed MVP audit record creation. Connect review drawer and notification UI.
