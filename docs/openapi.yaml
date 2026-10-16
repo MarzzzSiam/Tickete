@@ -4,6 +4,18 @@ info:
   version: 0.1.0
   description: Phase 0 foundation. Business endpoints are not implemented yet.
 paths:
+  /api/v1/auth/csrf/:
+    get:
+      operationId: auth_csrf_retrieve
+      tags:
+      - auth
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Csrf'
+          description: ''
   /api/v1/health/:
     get:
       operationId: health_retrieve
@@ -19,6 +31,13 @@ paths:
           description: ''
 components:
   schemas:
+    Csrf:
+      type: object
+      properties:
+        csrf_token:
+          type: string
+      required:
+      - csrf_token
     Health:
       type: object
       properties:

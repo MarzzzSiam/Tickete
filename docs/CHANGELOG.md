@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-10-16 — Phase 1 authentication started
+
+- User requested the next phase after reporting Render worker deployment; infrastructure acceptance remains open because live worker and subsequent Redis checks failed.
+- Implemented cookie JWT authentication and explicit Django CSRF enforcement, plus an anonymous, non-cacheable CSRF bootstrap endpoint.
+- Added twelve passing security tests and regenerated OpenAPI. Signup/login, verification/reset and event publishing remain pending.
+- Preserved dated phase milestones in the README and added the authentication implementation contract.
+
 ## 2026-10-07 — Phase 0 implementation
 
 - User approved the design and implementation plan; Supabase deferred in favor of local setup.
