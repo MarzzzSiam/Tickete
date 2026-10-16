@@ -1,6 +1,6 @@
 # Development without Docker
 
-Decision, 2026-10-14: use hosted Supabase PostgreSQL and hosted Redis. Django and Next.js continue running on this Windows workstation. A Linux Celery worker will be configured after both connections work. Supabase connectivity is verified with TLS required by the client. All 19 initial Django migrations applied successfully and the migration check reports none pending. Redis, the worker and isolated database tests are pending.
+Decision, 2026-10-14: use hosted Supabase PostgreSQL and hosted Redis. Django and Next.js continue running on this Windows workstation. Supabase connectivity is verified with TLS required by the client. All 19 initial Django migrations applied successfully and the migration check reports none pending. Update, 2026-10-16: hosted Redis PING succeeded after allow-list troubleshooting; hosted-worker settings pass Django checks. The live task/result check failed, so worker deployment and execution remain unverified. Isolated database tests are also pending.
 
 ## 1. Supabase development database
 
