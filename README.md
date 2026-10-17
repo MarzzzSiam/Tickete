@@ -4,7 +4,7 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
-2026-10-16: Phase 1 authentication work started at the user's request. Cookie JWT authentication, explicit CSRF checks and the CSRF bootstrap endpoint are implemented and locally tested; signup/login and event publishing are not implemented yet. The user reports the Render worker deployed, but the live task check failed and a subsequent Redis readiness check also failed. Phase 0 infrastructure acceptance remains open alongside Phase 1 development. Supabase's 19 initial migrations were previously verified. Follow [development without Docker](docs/12-cloud-development.md) and the [Phase 1 authentication contract](docs/13-phase-1-authentication.md).
+2026-10-18: Phase 1 authentication endpoints are implemented: registration, cookie login, refresh rotation, logout, profile, password change and verification/reset requests and confirmations. Database-backed sessions provide revocation; email links are expiring and single-use. PostgreSQL integration verification and migration deployment are pending. Frontend forms, hosted email delivery and event publishing are not complete. The previously reported worker deployment still needs live acceptance. Follow [development without Docker](docs/12-cloud-development.md) and the [Phase 1 authentication contract](docs/13-phase-1-authentication.md).
 
 Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs/05-system-design.md), and [task breakdown](docs/07-task-breakdown.md). The user confirmed ticket caps per order AND per buyer email across an event; see [decisions](docs/decisions/0001-source-reconciliation.md).
 
@@ -23,6 +23,10 @@ Keep this history when updating the current status. Append a dated entry for eac
 | 2026-10-16 | Phase 1 — authentication started | User requested progression after reporting worker deployment. Implemented cookie JWT authentication, CSRF bootstrap and unsafe-request CSRF checks. Twelve security tests pass; OpenAPI updated. | Registration, login/refresh/logout, verification/reset, profile and event publishing. Redis connectivity regressed; deployed worker execution remains unverified. |
 
 Phase 1 (authentication and event publishing) follows foundation acceptance. Phases 2–4 cover purchases/delivery, venue operations, then reporting and launch; see the task breakdown for acceptance criteria.
+ 
+### 2026-10-18 — Phase 1 authentication API increment
+
+Implemented the authentication endpoints, session/refresh revocation and hashed verification/reset challenges. Added PostgreSQL integration tests for session replay, logout, password reset, CSRF, profile permissions and throttling. Local security tests and schema checks pass; the database suite is awaiting isolated CI verification. A new additive migration is prepared but not yet applied to Supabase. Email requests enqueue work and do not claim delivery; frontend link handlers and hosted email integration remain pending.
 
 ## Structure
 
@@ -37,6 +41,6 @@ Prerequisites: Python 3.12 and Node 24. Follow the [cloud development guide](doc
 
 Frontend: `cd frontend`, `npm ci`, `npm run dev`. Open [local preview](http://127.0.0.1:3000) and [design system](http://127.0.0.1:3000/design). Backend process health: `http://127.0.0.1:8000/api/v1/health/`; frontend-to-backend check: `http://127.0.0.1:3000/api/health`.
 
-Current screens are clearly labeled previews. Authentication, event creation, real inventory, dummy checkout and ticket issuance are later phases. No real payments are accepted.
+Current screens are clearly labeled previews. Authentication APIs are in development; their frontend forms, event creation, real inventory, dummy checkout and ticket issuance remain pending. No real payments are accepted.
 
 CI configuration runs lint, type checks, production build, browser accessibility tests and PostgreSQL-backed tests when pushed to GitHub. The repository is connected to `MarzzzSiam/TICKETE`; CI results have not yet been verified. Pre-commit hooks are provided; activate the backend venv before `pre-commit install` and before committing.

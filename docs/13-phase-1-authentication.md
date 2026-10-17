@@ -1,5 +1,32 @@
 # Phase 1 authentication — 2026-10-16
 
+## 2026-10-18 implementation update
+
+The routes below are now implemented under `/api/v1/auth/` (all with a trailing slash):
+
+| Method | Route | Behavior |
+|---|---|---|
+| POST | register | Validates password, normalizes email, allows buyer/organizer only; returns profile, not a login session |
+| POST | login | Returns profile; writes HttpOnly access/refresh cookies and rotates CSRF |
+| POST | refresh | Single-use refresh rotation under a database row lock; rotates CSRF |
+| POST | logout | Revokes the session and clears cookies; requires CSRF even after access expiry |
+| GET/PATCH | me | Current profile; only full name and phone can be edited |
+| POST | change-password | Requires current password; revokes every session and outstanding challenge |
+| POST | verify-email/request | Authenticated email verification request queued to Celery |
+| POST | verify-email/confirm | Consumes a purpose-bound 30-minute link |
+| POST | password-reset/request | Same 202 response and dispatch for known/unknown email |
+| POST | password-reset/confirm | Consumes a reset link, updates password and revokes all sessions |
+
+Login sessions have UUID identifiers embedded in JWTs. Only a digest of the current refresh JWT is stored; access authentication checks active user and live session on every request. Access expires after five minutes; refresh expires after seven days and extends when rotated. Password changes and logout immediately revoke subsequent access. All session/challenge mutations use database transactions. Refresh replay is rejected; clients must serialize refresh attempts across tabs to avoid stale-token failures.
+
+Verification/reset use 256-bit random link tokens, not six-digit OTPs. Tokens are hashed in storage, purpose-bound and single-use; issuing a new link invalidates the preceding link of that purpose. The queue carries email and purpose only, never the secret link. The worker constructs a link fragment so the token is not sent in HTTP requests/referrers. Frontend fragment handlers are still pending, so this is not yet an end-to-end usable recovery flow.
+
+The worker must deploy the authentication branch before processing `apps.accounts.tasks.deliver_account_link`. Its existing production email backend intentionally fails until a provider is configured. A 202 response means queued/requested, never delivered. Registration is separate from verification dispatch so queue outages cannot turn committed account creation into an ambiguous failure. After registering, log in and explicitly request verification. Real sender/domain integration remains pending; console email is development only.
+
+DRF shared-cache throttles apply per IP (30/minute) and normalized email (10/hour). These are application-level best-effort limits, not atomic abuse prevention under concurrency. The IP uses `REMOTE_ADDR`; reverse-proxy routing must be verified before web deployment to avoid grouping every user under a proxy address. Shared-cache failures return a generic 503. No raw IP/email is stored in throttle keys.
+
+The `0002_authsession_emailchallenge` migration is additive. Do not deploy the new API before migrating. Isolated PostgreSQL integration tests are being verified; no test suite is run against shared Supabase data. The sections below preserve the October 16 increment and its original follow-up plan.
+
 The user requested Phase 1 after reporting worker deployment. Proceed with independent authentication work while preserving the unresolved infrastructure checks; this is not a declaration that Phase 0 acceptance is complete.
 
 ## Implemented first increment

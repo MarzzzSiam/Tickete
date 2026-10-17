@@ -1,3 +1,4 @@
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -95,6 +96,12 @@ SESSION_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SAMESITE = "Lax"
 X_FRAME_OPTIONS = "DENY"
 AUTH_ACCESS_COOKIE = "tickete_access"
+AUTH_REFRESH_COOKIE = "tickete_refresh"
+AUTH_COOKIE_SECURE = True
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+}
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["apps.accounts.authentication.CookieJWTAuthentication"],
     "DEFAULT_PERMISSION_CLASSES": ["rest_framework.permissions.IsAuthenticated"],
@@ -103,10 +110,11 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
     "EXCEPTION_HANDLER": "apps.core.exceptions.api_exception_handler",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
+    "DEFAULT_THROTTLE_RATES": {"auth_ip": "30/minute", "auth_email": "10/hour"},
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "TICKETÉ API",
-    "DESCRIPTION": "Phase 0 foundation. Business endpoints are not implemented yet.",
+    "DESCRIPTION": "Phase 1 authentication APIs. Event and purchasing APIs are pending.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }
@@ -118,6 +126,12 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+CELERY_BROKER_CONNECTION_TIMEOUT = 5
+CELERY_BROKER_TRANSPORT_OPTIONS = {"socket_connect_timeout": 5, "socket_timeout": 5}
+CELERY_REDIS_SOCKET_CONNECT_TIMEOUT = 5
+CELERY_REDIS_SOCKET_TIMEOUT = 5
+CELERY_REDIS_RETRY_ON_TIMEOUT = False
+CELERY_REDIS_RETRY_POLICY = {"max_retries": 1}
 CELERY_TASK_SOFT_TIME_LIMIT = 90
 CELERY_TASK_TIME_LIMIT = 120
 CACHES = {

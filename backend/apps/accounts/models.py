@@ -65,3 +65,26 @@ class User(AbstractUser):
 
     def get_short_name(self):
         return self.full_name.strip().split(" ")[0] or self.email
+
+
+class AuthSession(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="auth_sessions")
+    refresh_digest = models.CharField(max_length=64)
+    expires_at = models.DateTimeField()
+    revoked_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class EmailChallenge(models.Model):
+    class Purpose(models.TextChoices):
+        VERIFY = "verify", "Verify email"
+        RESET = "reset", "Reset password"
+
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="email_challenges")
+    purpose = models.CharField(max_length=10, choices=Purpose.choices)
+    token_digest = models.CharField(max_length=64)
+    expires_at = models.DateTimeField()
+    consumed_at = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
