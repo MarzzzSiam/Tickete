@@ -10,6 +10,7 @@ const links = [
   { href: "/events", label: "Explore events" },
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#for-organizers", label: "For organizers" },
+  { href: "/account", label: "My account" },
 ];
 export function Navigation() {
   const [open, setOpen] = useState(false);

@@ -46,6 +46,29 @@ jobs:
       - run: pytest --cov=apps --cov-report=term-missing
   frontend:
     runs-on: ubuntu-latest
+    env:
+      AUTH_E2E_LIVE: "1"
+      DATABASE_URL: postgresql://tickete:tickete_local@127.0.0.1:5432/tickete
+      REDIS_URL: redis://127.0.0.1:6379/0
+      FRONTEND_ORIGIN: http://127.0.0.1:3000
+      NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000/api/v1
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: tickete
+          POSTGRES_PASSWORD: tickete_local
+          POSTGRES_DB: tickete
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U tickete -d tickete"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     defaults:
       run:
         working-directory: frontend
@@ -62,6 +85,19 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npx playwright install --with-deps chromium
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r ../backend/requirements/local.txt
+      - run: python ../backend/manage.py migrate --noinput
+      - name: Start isolated authentication API
+        run: |
+          python ../backend/manage.py runserver 127.0.0.1:8000 --noreload > /tmp/tickete-api.log 2>&1 &
+          for attempt in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:8000/api/v1/health/; then exit 0; fi
+            sleep 1
+          done
+          exit 1
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
