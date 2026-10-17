@@ -25,7 +25,7 @@ The worker must deploy the authentication branch before processing `apps.account
 
 DRF shared-cache throttles apply per IP (30/minute) and normalized email (10/hour). These are application-level best-effort limits, not atomic abuse prevention under concurrency. The IP uses `REMOTE_ADDR`; reverse-proxy routing must be verified before web deployment to avoid grouping every user under a proxy address. Shared-cache failures return a generic 503. No raw IP/email is stored in throttle keys.
 
-The `0002_authsession_emailchallenge` migration is additive. Do not deploy the new API before migrating. Isolated PostgreSQL integration tests are being verified; no test suite is run against shared Supabase data. The sections below preserve the October 16 increment and its original follow-up plan.
+The additive `0002_authsession_emailchallenge` migration was applied to development Supabase on October 18 after CI passed; no migrations remain pending there. CI run 39061450192 passed 51 backend tests on isolated PostgreSQL, including simultaneous refresh, plus the existing frontend checks. No test suite was run against shared Supabase data. A final timeout-configuration adjustment also passed local Django and security checks. The sections below preserve the October 16 increment and its original follow-up plan.
 
 The user requested Phase 1 after reporting worker deployment. Proceed with independent authentication work while preserving the unresolved infrastructure checks; this is not a declaration that Phase 0 acceptance is complete.
 

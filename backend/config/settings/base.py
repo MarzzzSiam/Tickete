@@ -131,13 +131,14 @@ CELERY_BROKER_TRANSPORT_OPTIONS = {"socket_connect_timeout": 5, "socket_timeout"
 CELERY_REDIS_SOCKET_CONNECT_TIMEOUT = 5
 CELERY_REDIS_SOCKET_TIMEOUT = 5
 CELERY_REDIS_RETRY_ON_TIMEOUT = False
-CELERY_REDIS_RETRY_POLICY = {"max_retries": 1}
+CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {"retry_policy": {"max_retries": 1}}
 CELERY_TASK_SOFT_TIME_LIMIT = 90
 CELERY_TASK_TIME_LIMIT = 120
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": REDIS_URL,
+        "OPTIONS": {"socket_connect_timeout": 3, "socket_timeout": 3},
     }
 }
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"

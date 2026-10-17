@@ -5,7 +5,8 @@
 - Added registration, login, rotating refresh, logout, profile and password-change APIs; protected unsafe requests with CSRF and Redis-backed IP/email throttles that fail closed on cache failure.
 - Added database-backed session revocation and hashed, single-use verification/reset challenges with an additive migration. Password change/reset revoke sessions.
 - Added generic password-reset dispatch and a Celery mail task; hosted mail provider and frontend link handlers remain unconfigured.
-- Added PostgreSQL integration tests; isolated CI execution and shared-development migration application are pending verification.
+- Verified 51 backend tests on isolated PostgreSQL, including concurrent refresh; frontend CI also passed. Overall backend coverage is 90%. Applied the additive authentication migration to the Supabase development project and verified none pending.
+- Added manual CI dispatch after automatic pushes produced no runs. Bounded Redis connection/read timeouts for account throttling and task dispatch; hosted worker/mail acceptance remains separate.
 
 ## 2026-10-16 — Phase 1 authentication started
 
