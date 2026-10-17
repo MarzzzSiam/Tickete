@@ -29,6 +29,8 @@ Done when both apps run, README setup is tested, database connection status is e
 
 2026-10-18: implemented registration, session login/refresh/logout, profile, password change and verification/reset APIs. All 51 backend tests passed in isolated PostgreSQL CI, including concurrent refresh; frontend CI also passed. Applied the session/challenge migration to Supabase with none pending. Frontend forms, provider delivery, event APIs and the earlier live worker acceptance remain pending.
 
+2026-10-18 frontend follow-up: connected signup/login/account/profile/password/logout and verification/reset link forms. CI run 39064180434 passed 13 browser tests, including real Django/PostgreSQL/Redis signup/login/refresh/profile/logout flows on desktop and mobile. Shared Supabase was not used for automated account creation. Hosted PostgreSQL and Redis readiness passed after increasing the configurable cache/readiness timeout from three to five seconds. Manual account testing is documented in the root README; transactional email and worker acceptance remain pending.
+
 1. Implement User and authentication backend first: registration, verification, login/refresh/logout cookies, reset, profile, CSRF, throttles and permission tests. Connect forms after API contracts stabilize.
 2. Implement event/category/custom-field models and migrations, validation, draft edits/preview and submission. Build the four-step creation UI against those endpoints.
 3. Implement admin queue, approve/reject transitions, unique public slug, notifications and proposed MVP audit record creation. Connect review drawer and notification UI.

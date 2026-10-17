@@ -34,7 +34,9 @@ class Command(BaseCommand):
     def check_redis(self, failed):
         try:
             with Redis.from_url(
-                settings.REDIS_URL, socket_connect_timeout=3, socket_timeout=3
+                settings.REDIS_URL,
+                socket_connect_timeout=settings.REDIS_SOCKET_TIMEOUT,
+                socket_timeout=settings.REDIS_SOCKET_TIMEOUT,
             ) as client:
                 client.ping()
             self.stdout.write(self.style.SUCCESS("Redis: ready"))
