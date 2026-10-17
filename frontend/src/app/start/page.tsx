@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowLeft, Sparkles } from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import { ButtonLink, Pill } from "@/components/ui";
 export const metadata: Metadata = { title: "For organizers" };
 export default function StartPage() {
@@ -15,11 +15,11 @@ export default function StartPage() {
         <Sparkles size={45} strokeWidth={1.3} />
         <h2>That someone could be you.</h2>
         <p>
-          Organizer registration is coming soon. This is an early look at
-          TICKETÉ; account creation and event publishing aren’t open yet.
+          Create your account and choose “Organize events” to get started. Event
+          publishing is still being built; your account is the first step.
         </p>
-        <ButtonLink href="/" variant="secondary">
-          <ArrowLeft size={18} /> Back to the experience
+        <ButtonLink href="/signup" variant="secondary">
+          Create your account <ArrowUpRight size={18} />
         </ButtonLink>
       </div>
     </main>

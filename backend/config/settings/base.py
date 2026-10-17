@@ -119,6 +119,7 @@ SPECTACULAR_SETTINGS = {
     "SERVE_INCLUDE_SCHEMA": False,
 }
 REDIS_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
+REDIS_SOCKET_TIMEOUT = env.float("REDIS_SOCKET_TIMEOUT", default=5)
 CELERY_BROKER_URL = REDIS_URL
 CELERY_RESULT_BACKEND = REDIS_URL
 CELERY_ACCEPT_CONTENT = ["json"]
@@ -138,7 +139,10 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": REDIS_URL,
-        "OPTIONS": {"socket_connect_timeout": 3, "socket_timeout": 3},
+        "OPTIONS": {
+            "socket_connect_timeout": REDIS_SOCKET_TIMEOUT,
+            "socket_timeout": REDIS_SOCKET_TIMEOUT,
+        },
     }
 }
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
