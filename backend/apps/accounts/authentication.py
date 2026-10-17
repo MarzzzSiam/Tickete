@@ -19,6 +19,9 @@ def enforce_csrf(request):
 
 
 class CookieJWTAuthentication(JWTAuthentication):
+    def authenticate_header(self, request):
+        return 'Cookie realm="api"'
+
     def get_user(self, validated_token):
         user = super().get_user(validated_token)
         try:

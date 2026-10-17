@@ -59,6 +59,9 @@ class PublicAccountView(AccountView):
     permission_classes = [AllowAny]
     throttle_classes = [AuthIPThrottle, AuthEmailThrottle]
 
+    def get_authenticate_header(self, request):
+        return 'Cookie realm="api"'
+
 
 def validated(serializer_class, request):
     serializer = serializer_class(data=request.data)

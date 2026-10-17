@@ -261,3 +261,60 @@ def test_throttle_storage_failure_fails_closed(client):
         response = post(client, "login", {"email": "missing@example.com", "password": PASSWORD})
     assert response.status_code == 503
     assert "secret" not in str(response.json())
+
+
+@pytest.mark.parametrize(
+    "route", ["refresh", "logout", "password-reset/request", "verify-email/confirm"]
+)
+def test_public_writes_require_csrf_without_access_cookie(client, route):
+    assert client.post(f"/api/v1/auth/{route}/", {}, format="json").status_code == 403
+
+
+def test_mail_task_generates_link_but_stores_only_digest():
+    from urllib.parse import parse_qs, urlsplit
+
+    from django.core import mail
+
+    from apps.accounts.tasks import deliver_account_link
+
+    user = create_user()
+    with override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend"):
+        deliver_account_link(user.email, "reset")
+    assert len(mail.outbox) == 1
+    link = mail.outbox[0].body.splitlines()[1]
+    parts = urlsplit(link)
+    assert not parts.query
+    token = parse_qs(parts.fragment)["token"][0]
+    challenge = EmailChallenge.objects.get()
+    assert challenge.token_digest != token
+    assert len(token) >= 40
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_refresh_allows_only_one_rotation():
+    from concurrent.futures import ThreadPoolExecutor
+    from threading import Barrier
+
+    from django.db import close_old_connections
+    from rest_framework.exceptions import AuthenticationFailed
+
+    from apps.accounts import services
+
+    create_user()
+    _, (_, refresh) = services.login("organizer@example.com", PASSWORD)
+    barrier = Barrier(2)
+
+    def attempt():
+        close_old_connections()
+        try:
+            barrier.wait(timeout=10)
+            services.refresh_session(refresh)
+            return "rotated"
+        except AuthenticationFailed:
+            return "rejected"
+        finally:
+            close_old_connections()
+
+    with ThreadPoolExecutor(max_workers=2) as pool:
+        results = list(pool.map(lambda _: attempt(), range(2)))
+    assert sorted(results) == ["rejected", "rotated"]
