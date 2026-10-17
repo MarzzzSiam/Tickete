@@ -2,8 +2,30 @@ openapi: 3.0.3
 info:
   title: TICKETÉ API
   version: 0.1.0
-  description: Phase 0 foundation. Business endpoints are not implemented yet.
+  description: Phase 1 authentication APIs. Event and purchasing APIs are pending.
 paths:
+  /api/v1/auth/change-password/:
+    post:
+      operationId: auth_change_password_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ChangePassword'
+        required: true
+      security:
+      - cookieJWT: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/auth/csrf/:
     get:
       operationId: auth_csrf_retrieve
@@ -15,6 +37,204 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Csrf'
+          description: ''
+  /api/v1/auth/login/:
+    post:
+      operationId: auth_login_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Login'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Login'
+        required: true
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/v1/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      tags:
+      - auth
+      security:
+      - cookieJWT: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    patch:
+      operationId: auth_me_partial_update
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileUpdate'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileUpdate'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileUpdate'
+      security:
+      - cookieJWT: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/v1/auth/password-reset/confirm/:
+    post:
+      operationId: auth_password_reset_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResetConfirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResetConfirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResetConfirm'
+        required: true
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/password-reset/request/:
+    post:
+      operationId: auth_password_reset_request_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Email'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Email'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Email'
+        required: true
+      security:
+      - {}
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+          description: ''
+  /api/v1/auth/refresh/:
+    post:
+      operationId: auth_refresh_create
+      tags:
+      - auth
+      security:
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/v1/auth/register/:
+    post:
+      operationId: auth_register_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/v1/auth/verify-email/confirm/:
+    post:
+      operationId: auth_verify_email_confirm_create
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Confirm'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Confirm'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Confirm'
+        required: true
+      security:
+      - {}
+      responses:
+        '204':
+          description: No response body
+  /api/v1/auth/verify-email/request/:
+    post:
+      operationId: auth_verify_email_request_create
+      tags:
+      - auth
+      security:
+      - cookieJWT: []
+      responses:
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
           description: ''
   /api/v1/health/:
     get:
@@ -31,6 +251,33 @@ paths:
           description: ''
 components:
   schemas:
+    ChangePassword:
+      type: object
+      properties:
+        current_password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - current_password
+      - password
+    Confirm:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          format: uuid
+        token:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - challenge_id
+      - token
     Csrf:
       type: object
       properties:
@@ -38,6 +285,15 @@ components:
           type: string
       required:
       - csrf_token
+    Email:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+      required:
+      - email
     Health:
       type: object
       properties:
@@ -51,3 +307,127 @@ components:
       - service
       - status
       - version
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - email
+      - password
+    Message:
+      type: object
+      properties:
+        detail:
+          type: string
+      required:
+      - detail
+    PatchedProfileUpdate:
+      type: object
+      properties:
+        full_name:
+          type: string
+          maxLength: 150
+        phone:
+          type: string
+          maxLength: 30
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        email:
+          type: string
+          format: email
+          readOnly: true
+        full_name:
+          type: string
+          readOnly: true
+        phone:
+          type: string
+          readOnly: true
+        role:
+          allOf:
+          - $ref: '#/components/schemas/ProfileRoleEnum'
+          readOnly: true
+        email_verified:
+          type: boolean
+          readOnly: true
+      required:
+      - email
+      - email_verified
+      - full_name
+      - id
+      - phone
+      - role
+    ProfileRoleEnum:
+      enum:
+      - admin
+      - organizer
+      - buyer
+      type: string
+      description: |-
+        * `admin` - Admin
+        * `organizer` - Organizer
+        * `buyer` - Buyer
+    Register:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        full_name:
+          type: string
+          maxLength: 150
+        role:
+          allOf:
+          - $ref: '#/components/schemas/RegisterRoleEnum'
+          default: buyer
+      required:
+      - email
+      - full_name
+      - password
+    RegisterRoleEnum:
+      enum:
+      - buyer
+      - organizer
+      type: string
+      description: |-
+        * `buyer` - buyer
+        * `organizer` - organizer
+    ResetConfirm:
+      type: object
+      properties:
+        challenge_id:
+          type: string
+          format: uuid
+        token:
+          type: string
+          writeOnly: true
+          maxLength: 128
+        password:
+          type: string
+          writeOnly: true
+          maxLength: 128
+      required:
+      - challenge_id
+      - password
+      - token
+  securitySchemes:
+    cookieJWT:
+      type: apiKey
+      in: cookie
+      name: tickete_access
