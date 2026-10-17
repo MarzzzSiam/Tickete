@@ -23,7 +23,7 @@ Keep this history when updating the current status. Append a dated entry for eac
 | 2026-10-16 | Phase 1 — authentication started | User requested progression after reporting worker deployment. Implemented cookie JWT authentication, CSRF bootstrap and unsafe-request CSRF checks. Twelve security tests pass; OpenAPI updated. | Registration, login/refresh/logout, verification/reset, profile and event publishing. Redis connectivity regressed; deployed worker execution remains unverified. |
 
 Phase 1 (authentication and event publishing) follows foundation acceptance. Phases 2–4 cover purchases/delivery, venue operations, then reporting and launch; see the task breakdown for acceptance criteria.
- 
+
 ### 2026-10-18 — Phase 1 authentication API increment
 
 Implemented the authentication endpoints, session/refresh revocation and hashed verification/reset challenges. Added PostgreSQL integration tests for session replay, logout, password reset, CSRF, profile permissions and throttling. Local security tests and schema checks pass; the database suite is awaiting isolated CI verification. A new additive migration is prepared but not yet applied to Supabase. Email requests enqueue work and do not claim delivery; frontend link handlers and hosted email integration remain pending.
