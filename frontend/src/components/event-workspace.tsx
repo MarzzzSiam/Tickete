@@ -105,9 +105,11 @@ function localDate(value: string | null) {
 function EventEditor({
   event,
   onSave,
+  onDirty,
 }: {
   event: EventRecord | null;
   onSave: (event: EventRecord) => void;
+  onDirty: (dirty: boolean) => void;
 }) {
   const [step, setStep] = useState(0);
   const [problem, setProblem] = useState("");
@@ -151,6 +153,11 @@ function EventEditor({
     name: "form_fields",
   });
   const values = useWatch({ control: form.control }) as EditorData;
+  const dirty = form.formState.isDirty;
+  useEffect(() => {
+    onDirty(dirty);
+    return () => onDirty(false);
+  }, [dirty, onDirty]);
   function payload(data: EditorData) {
     const dates = Object.fromEntries(
       (["starts_at", "ends_at", "sales_start", "sales_end"] as const).map(
@@ -226,7 +233,8 @@ function EventEditor({
     <div className="event-editor">
       <form
         className="card auth-card auth-form"
-        onSubmit={form.handleSubmit(save)}
+        onSubmit={form.handleSubmit(save, () => setStep(0))}
+        noValidate
       >
         <nav className="event-steps" aria-label="Event creation steps">
           {steps.map((label, index) => (
@@ -451,6 +459,20 @@ function EventEditor({
           </Button>
         </div>
         {step === 3 && (
+          <EventPreview
+            event={
+              {
+                ...payload(values),
+                id: event?.id || "preview",
+                slug: null,
+                status: "draft",
+                rejection_reason: "",
+                has_banner: false,
+              } as EventRecord
+            }
+          />
+        )}
+        {step === 3 && (
           <p>
             Review your details, save the draft, then submit it from the event
             page. Email verification is required for submission. Pending and
@@ -518,6 +540,7 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
   const [problem, setProblem] = useState("");
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [page, setPage] = useState(1);
   useEffect(() => {
     let active = true;
@@ -639,12 +662,13 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
               {event.status === "draft" && (
                 <Button
                   onClick={submit}
-                  disabled={!profile.email_verified}
+                  disabled={!profile.email_verified || dirty}
                   loading={busy}
                 >
                   Submit for approval
                 </Button>
               )}
+              {dirty && <p>Save your changes before submitting.</p>}
               {event.slug && (
                 <ButtonLink href={`/events/${event.slug}`}>
                   View public event
@@ -655,9 +679,10 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
           {eventId === "new" ||
           (event && ["draft", "rejected"].includes(event.status)) ? (
             <EventEditor
-              key={event?.id || "new"}
+              key={event ? `${event.id}:${event.updated_at}` : "new"}
               event={event}
               onSave={saved}
+              onDirty={setDirty}
             />
           ) : event ? (
             <div className="card auth-card">

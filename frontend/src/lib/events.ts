@@ -31,6 +31,7 @@ export type EventRecord = {
   form_fields: CustomField[];
   status: "draft" | "pending" | "approved" | "rejected";
   rejection_reason: string;
+  updated_at?: string;
 };
 export type EventPage = {
   count: number;

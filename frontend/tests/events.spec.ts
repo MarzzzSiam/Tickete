@@ -118,8 +118,11 @@ test("real organizer submission becomes a public server-rendered event after adm
   await page
     .getByRole("link", { name: "View public event", exact: true })
     .click();
+  await expect(page).toHaveURL(/^http:\/\/127\.0\.0\.1:3000\/events\/[^/]+$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(title);
-  const html = await (await request.get(page.url())).text();
+  const response = await request.get(page.url());
+  expect(response.ok()).toBe(true);
+  const html = await response.text();
   expect(html).toContain(title);
   expect(html).toContain('property="og:title"');
   await page.screenshot({

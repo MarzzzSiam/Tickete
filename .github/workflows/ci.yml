@@ -101,7 +101,8 @@ jobs:
             sleep 1
           done
           exit 1
-      - run: npm run test:e2e
+      # Avoid retry storms consuming the shared auth IP budget after a failure.
+      - run: npm run test:e2e -- --retries=0
       - uses: actions/upload-artifact@v4
         if: always()
         with:
