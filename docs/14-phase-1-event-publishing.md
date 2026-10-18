@@ -14,6 +14,8 @@ This continues Phase 1 after authentication. It does not start checkout/payment 
 
 ## Routes and contract
 
+The privacy migration enables PostgreSQL row security and revokes Supabase `anon`/`authenticated` table privileges for Django-owned application/authentication tables. All browser data access goes through Django, including public approved-event endpoints; Supabase Auth/Data API are not used. Django must connect as the table owner (the existing session-pooler configuration) or an appropriately privileged server-only role. Rolling back this migration does not reopen public grants. This protects both new event data and existing account/session tables independently of Supabase project default grants.
+
 All API paths begin `/api/v1/` and end with `/`. Cookie authentication and CSRF protect private mutations.
 
 | Path | Methods | Access |

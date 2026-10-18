@@ -17,6 +17,18 @@ from apps.notifications.models import Notification
 pytestmark = pytest.mark.django_db
 
 
+def test_application_tables_have_row_security_enabled():
+    from django.db import connection
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT relname, relrowsecurity FROM pg_class WHERE relname IN ('events_event', 'accounts_user', 'accounts_authsession', 'core_auditlog', 'notifications_notification')"
+        )
+        flags = cursor.fetchall()
+    assert len(flags) == 5
+    assert all(enabled for _, enabled in flags)
+
+
 @pytest.fixture
 def owner():
     return User.objects.create_user("owner@example.com", role="organizer", email_verified=True)
