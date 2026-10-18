@@ -1,6 +1,6 @@
 # Task breakdown
 
-Status: implementation plan approved by the user on 2026-10-07. On 2026-10-14, Supabase connectivity and all 19 initial migrations were verified and foundation PR #1 was merged. Phase 0 Redis/worker setup is in progress; CI results and final visual sign-off remain to be recorded. See the dated history in the root README and `12-cloud-development.md` for current infrastructure steps; `11-phase-0-review.md` preserves the original review evidence.
+Status: implementation plan approved on 2026-10-07. As of 2026-10-18, authentication and event publishing are implemented and pass isolated CI; Supabase migrations are current. Live worker/email, hosted storage and final manual acceptance remain open. See the dated root README and `14-phase-1-event-publishing.md` for current evidence; earlier entries below preserve milestone history.
 
 ## Preparation
 
@@ -37,6 +37,8 @@ Done when both apps run, README setup is tested, database connection status is e
 4. Implement public approved-event APIs, SSR event page, listing/search and metadata. Ensure drafts/rejections are inaccessible by public URLs.
 5. Seed fictional admin, organizer and approved event with three categories. Add sample paid orders/tickets only once Phase 2 models exist.
 6. Verify create -> submit -> approve/reject -> public link, duplicate transitions, unverified submission denial, cross-event access, SSR share metadata and mobile forms. Document screenshots and request review.
+
+2026-10-18 event-publishing follow-up: implemented items 2–4 and automated create/submit/approve/public-page coverage. CI passed 70 backend tests and 16 browser tests. Applied event, notification, audit and privacy migrations to Supabase; verified no pending migrations and RLS/browser-role restrictions on 17 tables. Brevo account-email adapter is prepared, with private setup in `15-transactional-email.md`. Live delivery, hosted storage, manual review, expanded listing filters and the full three-category demo event remain outstanding; this does not mark the entire phase complete.
 
 ## Phase 2 — purchasing and delivery (MVP)
 

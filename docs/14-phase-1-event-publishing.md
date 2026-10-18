@@ -48,6 +48,12 @@ For isolated CI only, `seed_demo_accounts` creates fictional verified organizer/
 
 The browser-test settings require loopback PostgreSQL/Redis and explicit `AUTH_E2E_LIVE=1`; they raise the shared test IP's throttle budget so parallel browser sessions do not interfere. The separate backend suite tests the normal throttle limits. Local and hosted application settings retain their original limits.
 
+## Verification — 2026-10-18
+
+[CI run 39116501044](https://github.com/MarzzzSiam/TICKETE/actions/runs/39116501044) passed 70 backend tests with 91% coverage and 16 browser tests (two intentional skips), plus lint, formatting, schema, migration drift, types and production build checks. The browser suite exercised draft creation, submission, admin approval and anonymous server-rendered public content against disposable PostgreSQL/Redis. Shared Supabase was not used for automated account creation.
+
+After CI passed, all four new migrations were applied to the configured Supabase development database. No migrations remain pending. A read-only metadata check verified row security and no anon/authenticated table privileges on all 17 protected Django tables. Desktop/mobile editor screenshots and a desktop public-event screenshot are saved under `docs/screenshots/`; the public screenshot comes from the isolated CI test event.
+
 ## Remaining Phase 1 acceptance
 
 Live email/worker delivery, hosted Supabase banner storage, deployment-domain share previews, manual visual review, advanced date/category listing filters and the full three-category demo event remain separate follow-ups. Team-manager editing comes with Phase 3 team membership; only owners edit in this increment. SMTP or API acceptance never proves inbox delivery. See the email setup guide.

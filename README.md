@@ -4,7 +4,7 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
-2026-10-18: Phase 1 authentication endpoints are implemented: registration, cookie login, refresh rotation, logout, profile, password change and verification/reset requests and confirmations. Database-backed sessions provide revocation; email links are expiring and single-use. All 51 backend tests passed in isolated PostgreSQL CI, alongside frontend checks. The additive authentication migration is applied to Supabase, with none pending. Frontend account forms are implemented: CI passed 13 browser tests, including real API signup/login/session refresh/profile/logout on desktop and mobile. Hosted email delivery and event publishing are not complete. The previously reported worker deployment still needs live acceptance. Follow [development without Docker](docs/12-cloud-development.md) and the [Phase 1 authentication contract](docs/13-phase-1-authentication.md).
+2026-10-18: Phase 1 authentication and event publishing are implemented, including the organizer studio, admin review, notifications and approved public event pages. [CI run 39116501044](https://github.com/MarzzzSiam/TICKETE/actions/runs/39116501044) passed 70 backend tests (91% coverage) and 16 browser tests, including the real create/submit/approve/public-page flow. All event and privacy migrations are applied to Supabase, with none pending; row security and denied browser-role table privileges were verified on 17 Django tables. The Brevo email adapter is prepared, but hosted email/worker delivery and remaining Phase 1 acceptance are not complete. Follow [development without Docker](docs/12-cloud-development.md), [event publishing](docs/14-phase-1-event-publishing.md), and [private email setup](docs/15-transactional-email.md).
 
 Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs/05-system-design.md), and [task breakdown](docs/07-task-breakdown.md). The user confirmed ticket caps per order AND per buyer email across an event; see [decisions](docs/decisions/0001-source-reconciliation.md).
 
@@ -28,11 +28,11 @@ Phase 1 is proceeding at the user's request while outstanding foundation integra
 
 Implemented the authentication endpoints, session/refresh revocation and hashed verification/reset challenges. PostgreSQL integration tests cover session replay, logout, password reset, CSRF, profile permissions, throttling and simultaneous refresh. [CI run 39061450192](https://github.com/MarzzzSiam/TICKETE/actions/runs/39061450192) passed 51 backend tests (90% overall backend coverage) plus frontend lint/format/build/type/browser checks. The additive session/challenge migration was then applied to Supabase, with none pending. Email requests enqueue work and do not claim delivery; frontend link handlers and hosted email integration remain pending. Manual CI dispatch is available when pushes do not trigger a run.
 
-## Structure
-
 ### 2026-10-18 — Phase 1 event publishing and email adapter
 
-Implemented organizer draft/category/custom-field APIs, verified submission, admin approval/rejection, audit records, in-app notifications, banner validation and approved-only public content. Added the four-step organizer studio, review drawer, notifications screen and server-rendered public event page/share metadata. The Brevo HTTPS account-email adapter is prepared but live sending remains unconfigured. See [event publishing](docs/14-phase-1-event-publishing.md) and [private email setup](docs/15-transactional-email.md). New migrations and integration verification are tracked in the event guide; this is not a Phase 2/payment release.
+Implemented organizer draft/category/custom-field APIs, verified submission, admin approval/rejection, audit records, in-app notifications, banner validation and approved-only public content. Added the four-step organizer studio, review drawer, notifications screen and server-rendered public event page/share metadata. CI passed 70 backend and 16 browser tests (two intentional browser skips); lint, formatting, types, production build and schema checks passed. Applied four event/notification/audit/privacy migrations to Supabase and verified none pending. Confirmed RLS and denied anon/authenticated table privileges on all 17 Django tables. The Brevo HTTPS account-email adapter is prepared but live sending remains unconfigured. See [event publishing](docs/14-phase-1-event-publishing.md) and [private email setup](docs/15-transactional-email.md). This is not a Phase 2/payment release.
+
+## Structure
 
 - `backend/`: Python 3.12, Django, DRF, PostgreSQL, Celery.
 - `frontend/`: Next.js App Router, TypeScript, Tailwind.
@@ -45,7 +45,7 @@ Prerequisites: Python 3.12 and Node 24. Follow the [cloud development guide](doc
 
 Frontend: `cd frontend`, `npm ci`, `npm run dev`. Open [local preview](http://127.0.0.1:3000) and [design system](http://127.0.0.1:3000/design). Backend process health: `http://127.0.0.1:8000/api/v1/health/`; frontend-to-backend check: `http://127.0.0.1:3000/api/health`.
 
-Signup, login and account screens now connect to Django. Event creation, real inventory, dummy checkout and ticket issuance remain pending. No real payments are accepted.
+Signup, login, account screens and event publishing now connect to Django. Open `/organizer/events` to create drafts; verified email is required to submit. Admins review at `/admin/events`, and approved events appear at `/events`. Purchase inventory, dummy checkout and ticket issuance remain pending. No real payments are accepted.
 
 ### 2026-10-18 — Phase 1 frontend authentication increment
 

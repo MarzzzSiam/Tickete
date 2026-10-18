@@ -6,7 +6,8 @@
 - Added organizer draft editor, review drawer, approved public event listing/detail with server rendering and share metadata, and notification inbox.
 - Added validated/re-encoded banner storage and approved-only public banner reads.
 - Prepared a Brevo HTTPS adapter and private configuration guide; no provider credentials or real email delivery are claimed configured. Personal mailbox passwords are not used.
-- Added PostgreSQL API/permissions/concurrent-review tests, mocked provider tests and browser event-flow tests. Final results recorded in the README/event guide after verification.
+- Verified 70 backend tests (91% coverage) and 16 browser tests in CI run 39116501044, including the real event publishing flow; all lint/build/schema/type checks passed.
+- Applied four migrations to Supabase with none pending; verified RLS and denied anon/authenticated table privileges on 17 Django tables. Updated dated README progress and saved editor/public-page screenshots.
 
 ## 2026-10-18 — authentication endpoints
 
