@@ -48,6 +48,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AUTH_E2E_LIVE: "1"
+      DJANGO_SETTINGS_MODULE: config.settings.browser_tests
       DATABASE_URL: postgresql://tickete:tickete_local@127.0.0.1:5432/tickete
       REDIS_URL: redis://127.0.0.1:6379/0
       FRONTEND_ORIGIN: http://127.0.0.1:3000

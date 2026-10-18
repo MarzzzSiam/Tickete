@@ -46,6 +46,8 @@ Screens: `/organizer/events`, `/organizer/events/new`, `/organizer/events/{id}`,
 
 For isolated CI only, `seed_demo_accounts` creates fictional verified organizer/admin accounts when local settings, `TICKETE_ALLOW_DEMO_SEED=1`, and a private `DEMO_ACCOUNT_PASSWORD` are set. It never changes existing users and is disabled in hosted settings. Do not seed these accounts into a live customer database. Real administrators should be provisioned deliberately through Django's `createsuperuser`, not public signup.
 
+The browser-test settings require loopback PostgreSQL/Redis and explicit `AUTH_E2E_LIVE=1`; they raise the shared test IP's throttle budget so parallel browser sessions do not interfere. The separate backend suite tests the normal throttle limits. Local and hosted application settings retain their original limits.
+
 ## Remaining Phase 1 acceptance
 
 Live email/worker delivery, hosted Supabase banner storage, deployment-domain share previews, manual visual review, advanced date/category listing filters and the full three-category demo event remain separate follow-ups. Team-manager editing comes with Phase 3 team membership; only owners edit in this increment. SMTP or API acceptance never proves inbox delivery. See the email setup guide.
