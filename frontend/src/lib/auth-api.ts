@@ -31,16 +31,24 @@ async function request<T>(
 ): Promise<T> {
   let response: Response;
   try {
-    response = await fetch(`${base}/auth/${path}/`, {
+    const [route, query] = path.split("?");
+    response = await fetch(`${base}/${route}/${query ? `?${query}` : ""}`, {
       method,
       credentials: "include",
       cache: "no-store",
       signal: AbortSignal.timeout(15000),
       headers: {
-        ...(body ? { "Content-Type": "application/json" } : {}),
+        ...(body && !(body instanceof FormData)
+          ? { "Content-Type": "application/json" }
+          : {}),
         ...(csrf ? { "X-CSRFToken": csrf } : {}),
       },
-      body: body ? JSON.stringify(body) : undefined,
+      body:
+        body instanceof FormData
+          ? body
+          : body
+            ? JSON.stringify(body)
+            : undefined,
     });
   } catch {
     throw new AccountError(
@@ -73,14 +81,14 @@ async function write<T>(
   body?: unknown,
 ): Promise<T> {
   // Fetch afresh because login and refresh rotate the CSRF cookie.
-  const { csrf_token } = await request<{ csrf_token: string }>("csrf");
+  const { csrf_token } = await request<{ csrf_token: string }>("auth/csrf");
   return request<T>(path, method, body, csrf_token);
 }
 
 let refreshing: Promise<Profile> | undefined;
 async function refresh(): Promise<Profile> {
   if (!refreshing) {
-    refreshing = write<Profile>("refresh", "POST").finally(() => {
+    refreshing = write<Profile>("auth/refresh", "POST").finally(() => {
       refreshing = undefined;
     });
   }
@@ -109,7 +117,7 @@ async function performAccountRequest<T>(
   }
 }
 
-export async function accountRequest<T>(
+export async function apiRequest<T>(
   path: string,
   method = "GET",
   body?: unknown,
@@ -122,4 +130,13 @@ export async function accountRequest<T>(
     return navigator.locks.request("tickete-account-session", run);
   }
   return run();
+}
+
+export function accountRequest<T>(
+  path: string,
+  method = "GET",
+  body?: unknown,
+  authenticated = false,
+): Promise<T> {
+  return apiRequest<T>(`auth/${path}`, method, body, authenticated);
 }

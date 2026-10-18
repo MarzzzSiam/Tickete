@@ -15,12 +15,13 @@ export default function StartPage() {
         <Sparkles size={45} strokeWidth={1.3} />
         <h2>That someone could be you.</h2>
         <p>
-          Create your account and choose “Organize events” to get started. Event
-          publishing is still being built; your account is the first step.
+          Create an organizer account, build your event draft and submit it for
+          admin review. Verify your email before submitting.
         </p>
         <ButtonLink href="/signup" variant="secondary">
           Create your account <ArrowUpRight size={18} />
         </ButtonLink>
+        <ButtonLink href="/organizer/events">Open organizer studio</ButtonLink>
       </div>
     </main>
   );

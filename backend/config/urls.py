@@ -6,6 +6,7 @@ from apps.core.views import HealthView
 
 urlpatterns = [path("api/v1/health/", HealthView.as_view(), name="health")]
 urlpatterns += [path("api/v1/auth/", include("apps.accounts.urls"))]
+urlpatterns += [path("api/v1/", include("apps.events.urls"))]
 if settings.DEBUG:
     urlpatterns += [
         path("api/v1/schema/", SpectacularAPIView.as_view(), name="schema"),

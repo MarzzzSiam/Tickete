@@ -34,7 +34,7 @@ test("landing is usable, accessible and honest about availability", async ({
   });
   await page.getByRole("link", { name: "Find your next event" }).click();
   await expect(
-    page.getByRole("heading", { name: "The stage is being set." }),
+    page.getByRole("heading", { level: 1, name: /Your next/ }),
   ).toBeVisible();
 });
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-18 — event publishing and transactional email preparation
+
+- Added events, categories, custom fields, in-app notifications and admin audit models with additive migrations; owner/admin permissions, schedule checks and locked review transitions.
+- Added organizer draft editor, review drawer, approved public event listing/detail with server rendering and share metadata, and notification inbox.
+- Added validated/re-encoded banner storage and approved-only public banner reads.
+- Prepared a Brevo HTTPS adapter and private configuration guide; no provider credentials or real email delivery are claimed configured. Personal mailbox passwords are not used.
+- Added PostgreSQL API/permissions/concurrent-review tests, mocked provider tests and browser event-flow tests. Final results recorded in the README/event guide after verification.
+
 ## 2026-10-18 — authentication endpoints
 
 - Added registration, login, rotating refresh, logout, profile and password-change APIs; protected unsafe requests with CSRF and Redis-backed IP/email throttles that fail closed on cache failure.

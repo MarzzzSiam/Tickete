@@ -30,6 +30,10 @@ Implemented the authentication endpoints, session/refresh revocation and hashed 
 
 ## Structure
 
+### 2026-10-18 — Phase 1 event publishing and email adapter
+
+Implemented organizer draft/category/custom-field APIs, verified submission, admin approval/rejection, audit records, in-app notifications, banner validation and approved-only public content. Added the four-step organizer studio, review drawer, notifications screen and server-rendered public event page/share metadata. The Brevo HTTPS account-email adapter is prepared but live sending remains unconfigured. See [event publishing](docs/14-phase-1-event-publishing.md) and [private email setup](docs/15-transactional-email.md). New migrations and integration verification are tracked in the event guide; this is not a Phase 2/payment release.
+
 - `backend/`: Python 3.12, Django, DRF, PostgreSQL, Celery.
 - `frontend/`: Next.js App Router, TypeScript, Tailwind.
 - `docs/`: requirements, design, verification, deployment and decisions.
