@@ -48,10 +48,13 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AUTH_E2E_LIVE: "1"
+      DJANGO_SETTINGS_MODULE: config.settings.browser_tests
       DATABASE_URL: postgresql://tickete:tickete_local@127.0.0.1:5432/tickete
       REDIS_URL: redis://127.0.0.1:6379/0
       FRONTEND_ORIGIN: http://127.0.0.1:3000
       NEXT_PUBLIC_API_BASE_URL: http://127.0.0.1:8000/api/v1
+      TICKETE_ALLOW_DEMO_SEED: "1"
+      DEMO_ACCOUNT_PASSWORD: Fictional-CI-Only-Password-581!
     services:
       postgres:
         image: postgres:17-alpine
@@ -90,6 +93,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r ../backend/requirements/local.txt
       - run: python ../backend/manage.py migrate --noinput
+      - run: python ../backend/manage.py seed_demo_accounts
       - name: Start isolated authentication API
         run: |
           python ../backend/manage.py runserver 127.0.0.1:8000 --noreload > /tmp/tickete-api.log 2>&1 &
@@ -98,7 +102,8 @@ jobs:
             sleep 1
           done
           exit 1
-      - run: npm run test:e2e
+      # Avoid retry storms consuming the shared auth IP budget after a failure.
+      - run: npm run test:e2e -- --retries=0
       - uses: actions/upload-artifact@v4
         if: always()
         with:

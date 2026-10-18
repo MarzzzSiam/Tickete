@@ -23,6 +23,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "apps.accounts",
     "apps.core",
+    "apps.events",
+    "apps.notifications",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -146,6 +148,14 @@ CACHES = {
     }
 }
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_PROVIDER = env("EMAIL_PROVIDER", default="console")
+BREVO_API_KEY = env("BREVO_API_KEY", default="")
+if EMAIL_PROVIDER == "brevo":
+    EMAIL_BACKEND = "apps.core.email.BrevoEmailBackend"
+elif EMAIL_PROVIDER not in ("console", "disabled"):
+    raise ImproperlyConfigured("EMAIL_PROVIDER must be console, disabled or brevo.")
+elif EMAIL_PROVIDER == "disabled":
+    EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="TICKETÉ <hello@example.invalid>")
 SUPPORT_EMAIL = env("SUPPORT_EMAIL", default="support@example.invalid")
 STORAGE_BACKEND = env("STORAGE_BACKEND", default="local")

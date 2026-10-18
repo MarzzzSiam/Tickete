@@ -299,12 +299,22 @@ export function AccountPanel() {
                   <PasswordEditor />
                 </section>
               </div>
-              <p className="auth-bottom">
-                Event publishing is coming next.{" "}
-                <Link className="auth-link" href="/events">
-                  Explore TICKETÉ →
+              <div className="auth-actions">
+                {user.role === "organizer" && (
+                  <ButtonLink href="/organizer/events">
+                    Organizer studio
+                  </ButtonLink>
+                )}
+                {user.role === "admin" && (
+                  <ButtonLink href="/admin/events">Review events</ButtonLink>
+                )}
+                <Link className="auth-link" href="/notifications">
+                  Notifications
                 </Link>
-              </p>
+                <Link className="auth-link" href="/events">
+                  Explore events →
+                </Link>
+              </div>
             </>
           )}
         </>

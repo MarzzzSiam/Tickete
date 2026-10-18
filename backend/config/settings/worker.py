@@ -3,7 +3,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa: F403
-from .base import DATABASES, SECRET_KEY, env
+from .base import DATABASES, EMAIL_PROVIDER, SECRET_KEY, env
 
 for required in ("SECRET_KEY", "DATABASE_URL", "REDIS_URL"):
     if not env(required, default=""):
@@ -13,4 +13,5 @@ if len(SECRET_KEY) < 50 or SECRET_KEY.startswith("local-only"):
 
 DEBUG = False
 DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
-EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"
+if EMAIL_PROVIDER != "brevo":
+    EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"

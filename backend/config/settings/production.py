@@ -1,7 +1,7 @@
 from django.core.exceptions import ImproperlyConfigured
 
 from .base import *  # noqa: F403
-from .base import DATABASES, SECRET_KEY, env
+from .base import DATABASES, EMAIL_PROVIDER, SECRET_KEY, env
 
 if not env("SECRET_KEY", default="") or len(SECRET_KEY) < 50 or SECRET_KEY.startswith("local-only"):
     raise ImproperlyConfigured("Set a unique production SECRET_KEY of at least 50 characters.")
@@ -21,5 +21,6 @@ SECURE_HSTS_PRELOAD = True
 if env.bool("TRUST_PROXY_SSL_HEADER", default=False):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
-# Fail closed until a transactional provider is integrated in a later phase.
-EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"
+# Never send sensitive links to hosted console logs.
+if EMAIL_PROVIDER != "brevo":
+    EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"
