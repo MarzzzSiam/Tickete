@@ -18,6 +18,10 @@ from .services import create_challenge
     max_retries=3,
 )
 def deliver_account_link(email, purpose):
+    return send_account_link(email, purpose)
+
+
+def send_account_link(email, purpose):
     if purpose not in EmailChallenge.Purpose.values:
         return
     user = User.objects.filter(email=email, is_active=True).first()

@@ -22,5 +22,5 @@ if env.bool("TRUST_PROXY_SSL_HEADER", default=False):
     SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
 # Never send sensitive links to hosted console logs.
-if EMAIL_PROVIDER != "brevo":
+if EMAIL_PROVIDER not in ("brevo", "smtp"):
     EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"

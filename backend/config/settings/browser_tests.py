@@ -18,6 +18,10 @@ if (
 # normal abuse limits; the UI integration suite needs an independent budget.
 REST_FRAMEWORK = {
     **REST_FRAMEWORK,
-    "DEFAULT_THROTTLE_RATES": {"auth_ip": "1000/min", "auth_email": "1000/hour"},
+    "DEFAULT_THROTTLE_RATES": {
+        "auth_ip": "1000/min",
+        "auth_email": "1000/hour",
+        "checkout": "1000/min",
+    },
 }
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"

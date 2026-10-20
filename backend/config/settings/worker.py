@@ -13,5 +13,5 @@ if len(SECRET_KEY) < 50 or SECRET_KEY.startswith("local-only"):
 
 DEBUG = False
 DATABASES["default"]["OPTIONS"]["sslmode"] = "require"
-if EMAIL_PROVIDER != "brevo":
+if EMAIL_PROVIDER not in ("brevo", "smtp"):
     EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"

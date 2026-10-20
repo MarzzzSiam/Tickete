@@ -21,7 +21,7 @@ from .serializers import (
     RegisterSerializer,
     ResetConfirmSerializer,
 )
-from .tasks import deliver_account_link
+from .tasks import deliver_account_link, send_account_link
 from .throttles import AuthEmailThrottle, AuthIPThrottle, AuthUnavailable
 
 
@@ -102,7 +102,12 @@ def clear_session_cookies(response):
 
 def enqueue_link(email, purpose):
     try:
-        deliver_account_link.apply_async(args=[email, purpose], retry=False)
+        if settings.DEBUG and getattr(settings, "LOCAL_ACCOUNT_EMAIL_SYNC", False):
+            # Bypass Celery retry scheduling in local mode. A failed SMTP request
+            # fails once; the developer can retry after fixing configuration.
+            send_account_link(email, purpose)
+        else:
+            deliver_account_link.apply_async(args=[email, purpose], retry=False)
     except Exception:
         raise AuthUnavailable() from None
 

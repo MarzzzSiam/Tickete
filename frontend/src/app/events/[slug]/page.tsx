@@ -3,7 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { publicApiBase, publicEvent } from "@/lib/public-events";
 import { dhakaTime } from "@/lib/events";
-import { Pill } from "@/components/ui";
+import { Pill, ButtonLink } from "@/components/ui";
 type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
@@ -79,9 +79,12 @@ export default async function Page({ params }: Props) {
             Maximum {event.max_per_order} per order and per buyer email for this
             event.
           </p>
+          <ButtonLink href={`/events/${slug}/checkout`}>
+            Choose tickets
+          </ButtonLink>
           <p className="auth-notice">
-            Ticket purchasing is not available yet. This page previews the
-            approved event.
+            Test checkout · no real money is charged. PDF and email delivery are
+            still being built.
           </p>
         </section>
       </div>

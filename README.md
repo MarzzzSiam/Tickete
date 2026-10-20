@@ -4,11 +4,17 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-20 — budget update: the owner requires zero-cost development. Do not provision paid services. Local account email processing is available with `LOCAL_ACCOUNT_EMAIL_SYNC=True` in `backend/.env`; restart Django after changing it. No hosted worker is needed for these local verification/reset requests. Gmail SMTP remains unverified: encrypted connections succeeded but disconnected during authentication on both ports 587 and 465. To continue development without inbox delivery, set `EMAIL_PROVIDER=console` locally and use the private link printed in the Django terminal. Hosted launch and background job infrastructure remain unresolved; no promise of unlimited free hosting is made.
+
 2026-10-18: Phase 1 authentication and event publishing are implemented, including the organizer studio, admin review, notifications and approved public event pages. [CI run 39116501044](https://github.com/MarzzzSiam/TICKETE/actions/runs/39116501044) passed 70 backend tests (91% coverage) and 16 browser tests, including the real create/submit/approve/public-page flow. All event and privacy migrations are applied to Supabase, with none pending; row security and denied browser-role table privileges were verified on 17 Django tables. The Brevo email adapter is prepared, but hosted email/worker delivery and remaining Phase 1 acceptance are not complete. Follow [development without Docker](docs/12-cloud-development.md), [event publishing](docs/14-phase-1-event-publishing.md), and [private email setup](docs/15-transactional-email.md).
 
 Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs/05-system-design.md), and [task breakdown](docs/07-task-breakdown.md). The user confirmed ticket caps per order AND per buyer email across an event; see [decisions](docs/decisions/0001-source-reconciliation.md).
 
 ## Dated phase progress
+
+### 2026-10-20 — Gmail SMTP setup
+
+At the owner's request, added Django Gmail SMTP support for `hello.tickete@gmail.com`, superseding the original email-provider choice. Local and hosted worker settings support encrypted SMTP with private app-password credentials, sanitized delivery failures and existing Celery retries. Added a direct test-email command and [Gmail setup instructions](docs/15-transactional-email.md). Eight focused mocked email tests, Ruff, Black and Django system checks passed. Live SMTP/inbox and worker acceptance remain pending private credential setup; Phase 2 checkout has not started.
 
 Keep this history when updating the current status. Append a dated entry for each milestone or change of direction; distinguish implemented work from verified integrations.
 
