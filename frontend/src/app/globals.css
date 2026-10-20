@@ -1809,3 +1809,317 @@ h2 {
     transition: none !important;
   }
 }
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+.checkout-steps {
+  list-style: none;
+  padding: 0;
+  margin: 30px 0;
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.checkout-steps li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+}
+.checkout-steps span {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--line);
+  border-radius: 50%;
+}
+.checkout-steps [aria-current] {
+  color: var(--brand-700);
+  font-weight: 700;
+}
+.checkout-steps [aria-current] span {
+  border-color: var(--brand-500);
+  background: var(--brand-100);
+}
+.checkout-category {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 0;
+  border-bottom: 1px dashed var(--muted);
+}
+.checkout-category:last-of-type {
+  margin-bottom: 24px;
+}
+.checkout-toggle {
+  display: flex !important;
+  align-items: center;
+  gap: 10px;
+}
+.checkout-toggle input,
+.checkout-page input[type="checkbox"] {
+  width: 20px;
+  min-height: 20px;
+}
+.checkout-total {
+  font-size: 30px;
+  color: var(--brand-700);
+}
+.checkout-timer {
+  font-family: var(--font-jetbrains), monospace;
+  background: var(--highlight);
+  color: var(--ink);
+  padding: 12px;
+  border-radius: 8px;
+}
+.checkout-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.checkout-issued {
+  border: 2px solid var(--ink);
+  border-left: 8px solid var(--brand-500);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 16px 0;
+  overflow-wrap: anywhere;
+}
+.checkout-issued span {
+  font-size: 12px;
+  letter-spacing: 0.08em;
+}
+.checkout-page h1,
+.checkout-page h2,
+.checkout-page code {
+  overflow-wrap: anywhere;
+}
+.ticket-preview-note {
+  max-width: 780px;
+  margin: 24px 0;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.ticket-design {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  border: 3px solid var(--ink);
+  border-radius: 28px;
+  box-shadow: 8px 8px 0 var(--ink);
+  overflow: hidden;
+  margin: 40px 0;
+  background: white;
+}
+.ticket-design-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 32px;
+  border-bottom: 8px solid var(--brand-500);
+}
+.ticket-design-header > span:last-child {
+  font:
+    10px var(--font-jetbrains),
+    monospace;
+  letter-spacing: 0.1em;
+}
+.ticket-design-banner {
+  position: relative;
+  padding: 36px;
+  background: var(--brand-100);
+  overflow: hidden;
+  min-height: 260px;
+}
+.ticket-design-banner > span:first-child {
+  font:
+    11px var(--font-jetbrains),
+    monospace;
+  letter-spacing: 0.16em;
+}
+.ticket-design-banner h2 {
+  position: relative;
+  z-index: 1;
+  font-size: clamp(36px, 5vw, 64px);
+  line-height: 1.05;
+  margin: 20px 0;
+}
+.ticket-design-banner em {
+  color: var(--brand-700);
+}
+.ticket-design-banner p {
+  font-size: 12px;
+  position: relative;
+  z-index: 1;
+}
+.ticket-design-orbit {
+  position: absolute;
+  right: -65px;
+  top: -65px;
+  width: 300px;
+  height: 300px;
+  border: 50px solid var(--brand-500);
+  border-radius: 50%;
+  opacity: 0.2;
+}
+.ticket-design-details {
+  padding: 32px;
+}
+.ticket-design-details dl {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin: 28px 0;
+}
+.ticket-design-details dt,
+.ticket-design-identity > span {
+  font:
+    10px var(--font-jetbrains),
+    monospace;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+.ticket-design-details dd {
+  margin: 8px 0 0;
+  line-height: 1.6;
+  font-weight: 600;
+}
+.ticket-mono {
+  font-family: var(--font-jetbrains), monospace;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.ticket-design-identity {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.ticket-design-identity strong {
+  font:
+    14px var(--font-jetbrains),
+    monospace;
+}
+.ticket-design-footer {
+  padding: 0 32px 28px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+.ticket-design-footer p:first-child {
+  font-weight: 700;
+  color: var(--ink);
+}
+.ticket-design-stub {
+  border-left: 2px dashed var(--muted);
+  padding: 36px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 24px;
+  background: var(--brand-50);
+  position: relative;
+}
+.ticket-design-stub::before,
+.ticket-design-stub::after {
+  content: "";
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--ink);
+  background: white;
+  position: absolute;
+  left: -20px;
+  border-radius: 50%;
+}
+.ticket-design-stub::before {
+  top: -22px;
+}
+.ticket-design-stub::after {
+  bottom: -22px;
+}
+.ticket-stub-label {
+  font:
+    14px var(--font-jetbrains),
+    monospace;
+  letter-spacing: 0.25em;
+}
+.ticket-qr-placeholder {
+  width: 160px;
+  height: 160px;
+  border: 2px solid black;
+  background: white;
+  color: black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+.ticket-qr-placeholder small {
+  font-size: 10px;
+}
+.ticket-design-stub p {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+.ticket-sample-stamp {
+  border: 2px solid var(--brand-700);
+  color: var(--brand-700);
+  padding: 12px;
+  font:
+    12px var(--font-jetbrains),
+    monospace;
+  transform: rotate(-6deg);
+}
+@media (max-width: 760px) {
+  .checkout-grid {
+    grid-template-columns: 1fr;
+  }
+  .checkout-steps {
+    gap: 10px;
+    font-size: 12px;
+  }
+  .checkout-steps span {
+    width: 24px;
+    height: 24px;
+  }
+  .ticket-design {
+    grid-template-columns: 1fr;
+  }
+  .ticket-design-stub {
+    border-left: 0;
+    border-top: 2px dashed var(--muted);
+  }
+  .ticket-design-stub::before,
+  .ticket-design-stub::after {
+    display: none;
+  }
+  .ticket-design-header {
+    padding: 20px;
+    flex-wrap: wrap;
+  }
+  .ticket-design-details,
+  .ticket-design-banner {
+    padding: 24px;
+  }
+  .ticket-design-details dl {
+    grid-template-columns: 1fr;
+  }
+}
+@media print {
+  .ticket-design {
+    box-shadow: none;
+    break-inside: avoid;
+  }
+}

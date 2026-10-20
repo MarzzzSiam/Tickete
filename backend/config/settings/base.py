@@ -2,6 +2,7 @@ from datetime import timedelta
 from pathlib import Path
 
 import environ
+from corsheaders.defaults import default_headers
 from django.core.exceptions import ImproperlyConfigured
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -25,6 +26,9 @@ INSTALLED_APPS = [
     "apps.core",
     "apps.events",
     "apps.notifications",
+    "apps.orders",
+    "apps.payments",
+    "apps.tickets",
 ]
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -92,6 +96,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 FRONTEND_ORIGIN = env("FRONTEND_ORIGIN", default="http://127.0.0.1:3000")
 CORS_ALLOWED_ORIGINS = [FRONTEND_ORIGIN]
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [*default_headers, "x-checkout-token"]
 CSRF_TRUSTED_ORIGINS = [FRONTEND_ORIGIN]
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
@@ -112,11 +117,15 @@ REST_FRAMEWORK = {
     "PAGE_SIZE": 25,
     "EXCEPTION_HANDLER": "apps.core.exceptions.api_exception_handler",
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
-    "DEFAULT_THROTTLE_RATES": {"auth_ip": "30/minute", "auth_email": "10/hour"},
+    "DEFAULT_THROTTLE_RATES": {
+        "auth_ip": "30/minute",
+        "auth_email": "10/hour",
+        "checkout": "120/minute",
+    },
 }
 SPECTACULAR_SETTINGS = {
     "TITLE": "TICKETÉ API",
-    "DESCRIPTION": "Phase 1 authentication APIs. Event and purchasing APIs are pending.",
+    "DESCRIPTION": "Authentication, event publishing and simulated ticket checkout APIs.",
     "VERSION": "0.1.0",
     "SERVE_INCLUDE_SCHEMA": False,
 }

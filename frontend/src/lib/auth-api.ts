@@ -28,6 +28,7 @@ async function request<T>(
   method = "GET",
   body?: unknown,
   csrf?: string,
+  checkoutToken?: string,
 ): Promise<T> {
   let response: Response;
   try {
@@ -42,6 +43,7 @@ async function request<T>(
           ? { "Content-Type": "application/json" }
           : {}),
         ...(csrf ? { "X-CSRFToken": csrf } : {}),
+        ...(checkoutToken ? { "X-Checkout-Token": checkoutToken } : {}),
       },
       body:
         body instanceof FormData
@@ -79,10 +81,11 @@ async function write<T>(
   path: string,
   method: string,
   body?: unknown,
+  checkoutToken?: string,
 ): Promise<T> {
   // Fetch afresh because login and refresh rotate the CSRF cookie.
   const { csrf_token } = await request<{ csrf_token: string }>("auth/csrf");
-  return request<T>(path, method, body, csrf_token);
+  return request<T>(path, method, body, csrf_token, checkoutToken);
 }
 
 let refreshing: Promise<Profile> | undefined;
@@ -100,9 +103,12 @@ async function performAccountRequest<T>(
   method = "GET",
   body?: unknown,
   authenticated = false,
+  checkoutToken?: string,
 ): Promise<T> {
   const run = () =>
-    method === "GET" ? request<T>(path) : write<T>(path, method, body);
+    method === "GET"
+      ? request<T>(path, method, undefined, undefined, checkoutToken)
+      : write<T>(path, method, body, checkoutToken);
   try {
     return await run();
   } catch (error) {
@@ -122,8 +128,10 @@ export async function apiRequest<T>(
   method = "GET",
   body?: unknown,
   authenticated = false,
+  checkoutToken?: string,
 ): Promise<T> {
-  const run = () => performAccountRequest<T>(path, method, body, authenticated);
+  const run = () =>
+    performAccountRequest<T>(path, method, body, authenticated, checkoutToken);
   // Serialize cookie rotations and CSRF bootstrap/write pairs across tabs.
   // A waiting tab retries its original request with the newly rotated cookies.
   if (typeof navigator !== "undefined" && navigator.locks) {
