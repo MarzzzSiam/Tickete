@@ -2,6 +2,9 @@
 
 ## 2026-10-20 — Gmail SMTP support
 
+- Recorded the zero-cost constraint and deferred paid worker provisioning. Added opt-in local synchronous account-email processing, guarded by DEBUG, and a console-mail fallback guide. Hosted processing remains queued.
+- Distinguished SMTP authentication rejection from unexpected disconnection without exposing provider responses or credentials.
+
 - Owner selected Gmail SMTP instead of the previously planned Brevo setup.
 - Added encrypted Django SMTP delivery, hosted worker support, safe errors and focused mocked tests.
 - Added explicit-recipient test-email command and private app-password instructions. No real email sent or credentials configured by this change.

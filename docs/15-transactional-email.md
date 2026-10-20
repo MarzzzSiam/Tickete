@@ -4,6 +4,12 @@ On 2026-10-20 the owner explicitly selected Django + Gmail SMTP using `hello.tic
 
 ## Gmail setup — current choice
 
+**2026-10-20 budget update:** do not create a paid Render worker. For local development, add `LOCAL_ACCOUNT_EMAIL_SYNC=True` to `backend/.env` and restart Django. Verification/reset requests then execute on the PC, without Celery queueing or background retries. SMTP failures still fail the request. Production settings never enable this shortcut. Redis remains required for existing authentication throttling.
+
+If Gmail is unavailable, set `EMAIL_PROVIDER=console` locally to print verification/reset links in the backend terminal. These are private account tokens: open them locally, do not share screenshots of them. This enables development but does not send mail or prove inbox delivery. Gmail connections currently reach TLS successfully but disconnect during authentication; that is not a confirmed wrong-password response.
+
+The Render instructions below are an optional future hosted setup, not a requirement for the current zero-cost local workflow.
+
 1. Sign in to the Google account for `hello.tickete@gmail.com`. Enable **2-Step Verification**, then open [App passwords](https://myaccount.google.com/apppasswords) and create one named `TICKETÉ`. Use this app password, never the normal Google password. Google may restrict app passwords for some account/security configurations; see [Google's instructions](https://support.google.com/accounts/answer/185833).
 2. Edit **`D:\TICKETÉ\backend\.env`** in VS Code. Replace existing entries with these values (avoid duplicate keys). Paste the app password in the password value, removing display spaces. Do not paste it into chat or GitHub.
 

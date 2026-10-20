@@ -1,4 +1,4 @@
-from smtplib import SMTPException
+from smtplib import SMTPAuthenticationError, SMTPException, SMTPServerDisconnected
 
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail.backends.base import BaseEmailBackend
@@ -33,9 +33,18 @@ class SafeSMTPEmailBackend(DjangoSMTPBackend):
                 fail_silently=False,
             ) as connection:
                 return connection.send_messages(email_messages)
-        except (SMTPException, OSError):
+        except (SMTPException, OSError) as exc:
             if self.fail_silently:
                 return 0
+            if isinstance(exc, SMTPAuthenticationError):
+                raise MailDeliveryError(
+                    "SMTP authentication rejected. Check the sender account and Google app password."
+                ) from None
+            if isinstance(exc, SMTPServerDisconnected):
+                raise MailDeliveryError(
+                    "SMTP connection closed unexpectedly. This does not confirm a bad password. "
+                    "Check Google account alerts and retry on another network."
+                ) from None
             raise MailDeliveryError(
                 "SMTP delivery failed. Check credentials, provider limits and network access."
             ) from None
