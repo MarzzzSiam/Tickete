@@ -42,6 +42,8 @@ Done when both apps run, README setup is tested, database connection status is e
 
 ## Phase 2 — purchasing and delivery (MVP)
 
+2026-10-21: started at the owner's request after they confirmed events and SMTP work. Free tickets excluded; attendee names optional. Added checkout/order/hold/payment/ticket foundation and HTML ticket design preview. PDF module awaits the required design review; ticket delivery/recovery remain outstanding. See `16-phase-2-checkout.md` for verification and current boundaries.
+
 Resolve free tickets and name requiredness first. Implement confirmed per-order and per-email/event caps, holds/order snapshots/idempotency and PostgreSQL races; dummy gateway/OTP and failure recovery; ticket issuance; approved HTML mock-up then PDF/QR; Celery delivery and reconciliation; confirmation/gifting/download; recovery by email OTP in Phase 2. Test guest and registered journeys, same-email races across categories, last-seat contention, retries, expiry races, private access, and multi-page PDF scanability. Review before Phase 3.
 
 ## Phase 3 — venue operations (MVP)

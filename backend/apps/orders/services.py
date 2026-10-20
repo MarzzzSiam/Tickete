@@ -13,7 +13,7 @@ from rest_framework.exceptions import APIException, NotFound, ValidationError
 from apps.events.models import Event, TicketCategory
 from apps.payments.gateway import gateway
 from apps.payments.models import Payment
-from apps.tickets.models import Ticket
+from apps.tickets.models import Ticket, TicketDelivery
 
 from .models import Order, SeatHold
 
@@ -163,6 +163,8 @@ def _create_order(data, user):
         )
         total += category.price * selection["quantity"]
     snapshot = {
+        "banner_key": event.banner_key,
+        "organizer_contact": event.owner.email,
         "title": event.title,
         "venue": event.venue,
         "starts_at": event.starts_at.isoformat(),
@@ -302,6 +304,7 @@ def verify_payment(order_id, token, otp):
     payment.status = "success"
     payment.verified_at = order.paid_at
     payment.save(update_fields=["status", "verified_at", "attempts"])
+    TicketDelivery.objects.get_or_create(order=order)
     return order
 
 
@@ -315,6 +318,8 @@ def cancel_order(order_id, token):
 
 
 def result(order):
+    from apps.tickets.delivery import delivery_status
+
     payment = Payment.objects.filter(order=order).first()
     return {
         "id": order.id,
@@ -339,5 +344,6 @@ def result(order):
         "tickets": list(
             order.tickets.values("id", "code", "category_id", "attendee_name", "position", "status")
         ),
-        "delivery_status": "not_implemented",
+        "delivery_status": delivery_status(order),
+        "pdf_ready": TicketDelivery.objects.filter(order=order).exclude(pdf_key="").exists(),
     }

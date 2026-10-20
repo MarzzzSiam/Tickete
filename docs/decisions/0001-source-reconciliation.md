@@ -21,6 +21,8 @@ The user supplied the MD, ERD and logos first, then supplied the base PRD and fe
 
 ## Unanswered product choices (not blockers for Phase 0)
 
+2026-10-21 update: the owner selected **exclude free tickets for now** and **keep attendee names optional** when collection is enabled. These resolve the corresponding questions below. Checkout rejects zero-price categories; it does not implement a free-payment bypass.
+
 - Are zero-price tickets allowed? Do not implement a payment bypass until decided in Phase 2.
 - Is a minimum submission notice required? Proposed MVP: no arbitrary notice period; reject invalid or already-ended event schedules.
 - Should organizer staff see payment phone numbers? Proposed default: no; keep them out of attendee APIs and logs.

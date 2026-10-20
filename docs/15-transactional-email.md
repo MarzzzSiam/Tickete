@@ -1,5 +1,7 @@
 # Transactional email setup — 2026-10-18
 
+**2026-10-21 acceptance update:** the owner reports Gmail SMTP delivery now works and emails arrive directly in the inbox. The disconnect notes below describe the earlier troubleshooting history. Continue with local synchronous processing for zero-cost development; no hosted worker is required for that mode. This verifies account email delivery by user report, not ticket-PDF delivery, which is still being implemented in Phase 2.
+
 On 2026-10-20 the owner explicitly selected Django + Gmail SMTP using `hello.tickete@gmail.com`, superseding the original brief's transactional-provider restriction. Both SMTP and the optional Brevo adapter are supported. Neither is verified live until configured and tested. Ticket PDF generation/delivery belongs to Phase 2.
 
 ## Gmail setup — current choice

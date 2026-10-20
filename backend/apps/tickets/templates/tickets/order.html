@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>TICKETÉ tickets</title>
+<style>
+@font-face { font-family: Inter; src: url('asset:Inter.ttf'); }
+@font-face { font-family: Playfair; src: url('asset:Playfair.ttf'); }
+@page { size: A4 landscape; margin: 12mm; }
+* { box-sizing: border-box; }
+body { margin: 0; color: #15151c; font: 10pt Inter, sans-serif; }
+.ticket { height: 184mm; border: .5mm solid #15151c; border-radius: 5mm; display: flex; break-after: page; position: relative; }
+.ticket:last-child { break-after: auto; }
+.main { width: 207mm; padding: 8mm; }
+header { height: 15mm; display: flex; align-items: center; justify-content: space-between; font-size: 7pt; letter-spacing: 1pt; }
+.logo { width: 49mm; height: 10mm; overflow: hidden; position: relative; }
+.logo img { width: 60mm; position: absolute; left: -5.6mm; top: -25.4mm; }
+.banner { height: 53mm; margin: 3mm 0 5mm; padding: 5mm; background: #5145ee; color: white; border-radius: 2mm; position: relative; overflow: hidden; }
+.banner img { position: absolute; top:0; left:0; width:100%; height:100%; object-fit:cover; }
+.banner .shade { position:absolute; inset:0; background:rgba(25,20,75,.75); }
+.banner .text { position: relative; }
+h1 { font: 25pt Playfair, serif; line-height: 1.1; margin: 3mm 0; overflow-wrap:anywhere; }
+.long-title h1 { font-size: 18pt; }
+.label { font-size: 7pt; letter-spacing: 1pt; text-transform: uppercase; }
+.category { display: inline-block; color:#4034cf; border: .25mm solid #aaa3fa; background:#f3f1ff; padding: 2mm 4mm; border-radius: 5mm; max-width: 100%; overflow-wrap:anywhere; }
+.details { display:flex; flex-wrap:wrap; margin-top: 4mm; }
+.field { width:50%; padding-right:4mm; margin-bottom:4mm; }
+.value { margin-top:1.5mm; line-height:1.35; overflow-wrap:anywhere; font-size:9pt; }
+.venue { font-size:8pt; }
+.identity { display:flex; justify-content:space-between; border-top:.25mm solid #bbb; padding-top:3mm; font-size:8pt; }
+footer { position:absolute; bottom:6mm; left:8mm; width:187mm; font-size:7pt; line-height:1.6; overflow-wrap:anywhere; }
+.stub { width:65mm; border-left:.4mm dashed #aaa3d2; text-align:center; padding:13mm 5mm; background:#f8f7ff; border-radius:0 5mm 5mm 0; }
+.qr { width:45mm; height:45mm; display:block; margin:13mm auto 5mm; }
+.stub p { font-size:8pt; line-height:1.5; }
+.stamp { margin:12mm 0 8mm; padding:3mm; border:.35mm solid #5145ee; color:#5145ee; font-size:10pt; }
+.notch { position:absolute; width:7mm; height:7mm; border:.4mm solid #15151c; border-radius:50%; background:white; left:203mm; }
+.top { top:-4mm; } .bottom { bottom:-4mm; }
+</style></head><body>
+{% for page in pages %}
+<article class="ticket"><section class="main">
+<header><div class="logo"><img src="asset:horizontal.png" alt="TICKETÉ"></div><span>YOUR MOMENT IS HERE</span></header>
+<div class="banner {% if order.snapshot.title|length > 80 %}long-title{% endif %}">
+{% if has_banner %}<img src="asset:banner" alt=""><div class="shade"></div>{% endif %}
+<div class="text"><span class="label">YOUR NEXT EXPERIENCE</span><h1>{{ order.snapshot.title }}</h1>{% if sample %}<span>Fictional design sample</span>{% endif %}</div></div>
+<div class="category">{{ page.category }}</div>
+<div class="details">
+<div class="field"><div class="label">WHEN · ASIA/DHAKA</div><div class="value">{{ start }}<br>to {{ end }}</div></div>
+<div class="field"><div class="label">WHERE</div><div class="value venue">{{ order.snapshot.venue }}</div></div>
+<div class="field"><div class="label">ATTENDEE · OPTIONAL</div><div class="value">{{ page.ticket.attendee_name|default:"General admission" }}</div></div>
+<div class="field"><div class="label">ORDER NUMBER</div><div class="value">{{ order.number }}</div></div>
+</div><div class="identity"><span>TICKET ID</span><strong>{{ page.ticket.code }}</strong><span>{{ page.ticket.position }} OF {{ order.quantity }}</span></div>
+<footer>One ticket. One entry. Keep your QR private.<br>Organizer: {{ order.snapshot.organizer_contact|default:support }}<br>Platform support: {{ support }}</footer>
+</section><aside class="stub"><span class="label">ADMIT ONE</span><img class="qr" src="{{ page.qr }}" alt="Ticket QR"><strong>Scan at entry</strong><p>Show this QR at the venue.<br>Each code admits one person.</p><div class="stamp">{% if sample %}SAMPLE<br>NOT VALID{% else %}YOUR TICKET<br>KEEP IT SAFE{% endif %}</div><span>{{ page.ticket.position }} / {{ order.quantity }}</span></aside><i class="notch top"></i><i class="notch bottom"></i></article>
+{% endfor %}</body></html>

@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -5,6 +6,8 @@ from rest_framework.views import APIView
 
 from apps.accounts.authentication import enforce_csrf
 from apps.accounts.throttles import AuthIPThrottle
+from apps.core.storage import get_storage
+from apps.tickets.models import TicketDelivery
 
 from . import services
 from .serializers import CheckoutInput, CheckoutResult, PaymentInput, VerifyInput
@@ -76,3 +79,16 @@ class CancelOrder(CheckoutView):
     @extend_schema(request=None, responses=CheckoutResult)
     def post(self, request, pk):
         return self.output(services.cancel_order(pk, request.headers.get("X-Checkout-Token", "")))
+
+
+class DownloadTickets(CheckoutView):
+    @extend_schema(responses={(200, "application/pdf"): bytes})
+    def get(self, request, pk):
+        order = services.read_order(pk, request.headers.get("X-Checkout-Token", ""))
+        job = TicketDelivery.objects.filter(order=order).exclude(pdf_key="").first()
+        if order.status != "paid" or not job:
+            return Response({"detail": "Tickets are not ready yet."}, status=409)
+        response = HttpResponse(get_storage().read(job.pdf_key), content_type="application/pdf")
+        response["Content-Disposition"] = f'attachment; filename="{order.number}.pdf"'
+        response["X-Content-Type-Options"] = "nosniff"
+        return response
