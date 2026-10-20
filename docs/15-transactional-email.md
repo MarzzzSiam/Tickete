@@ -1,8 +1,37 @@
 # Transactional email setup — 2026-10-18
 
-The approved build brief requires a transactional provider, not personal Gmail/Outlook SMTP credentials. The optional Brevo HTTPS adapter is prepared for verification/reset messages. It remains disabled unless explicitly configured. Ticket PDF attachments will be added with Phase 2; the current adapter rejects unsupported attachments rather than silently dropping them.
+On 2026-10-20 the owner explicitly selected Django + Gmail SMTP using `hello.tickete@gmail.com`, superseding the original brief's transactional-provider restriction. Both SMTP and the optional Brevo adapter are supported. Neither is verified live until configured and tested. Ticket PDF generation/delivery belongs to Phase 2.
 
-## What the owner needs to do
+## Gmail setup — current choice
+
+1. Sign in to the Google account for `hello.tickete@gmail.com`. Enable **2-Step Verification**, then open [App passwords](https://myaccount.google.com/apppasswords) and create one named `TICKETÉ`. Use this app password, never the normal Google password. Google may restrict app passwords for some account/security configurations; see [Google's instructions](https://support.google.com/accounts/answer/185833).
+2. Edit **`D:\TICKETÉ\backend\.env`** in VS Code. Replace existing entries with these values (avoid duplicate keys). Paste the app password in the password value, removing display spaces. Do not paste it into chat or GitHub.
+
+```dotenv
+EMAIL_PROVIDER=smtp
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_HOST_USER=hello.tickete@gmail.com
+EMAIL_HOST_PASSWORD=PASTE_GOOGLE_APP_PASSWORD_HERE
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
+EMAIL_TIMEOUT=15
+DEFAULT_FROM_EMAIL=TICKETÉ <hello.tickete@gmail.com>
+SUPPORT_EMAIL=hello.tickete@gmail.com
+```
+
+3. Add the same variables separately under **Render → your background worker → Environment**. Deploy the branch containing this SMTP change, then save/redeploy the worker. Account email jobs run on the worker, so changing only the PC's `.env` is insufficient. Keep `FRONTEND_ORIGIN` accessible to the person opening the email (local testing on this PC uses `http://127.0.0.1:3000`).
+4. Restart Django. From `D:\TICKETÉ\backend`, run:
+
+```powershell
+.\.venv\Scripts\python.exe manage.py test_email --to hello.tickete@gmail.com
+```
+
+This sends one plain test email directly from the PC. It verifies provider acceptance, not inbox receipt or Celery. Check inbox/spam, then request verification from the app's Account screen and check worker logs plus the inbox to verify the full background flow.
+
+Gmail uses [authenticated STARTTLS on port 587](https://support.google.com/mail/answer/7104828). Render [blocks SMTP ports on free web services](https://render.com/changelog/free-web-services-will-no-longer-allow-outbound-traffic-to-smtp-ports); use the background worker for sending, and diagnose its actual network access if it times out. Gmail quotas can limit delivery; assess a transactional provider before public launch. SMTP failures produce sanitized errors and reuse the existing bounded Celery retries. An ambiguous network failure can produce duplicate messages; use the newest account link.
+
+## Optional alternative: Brevo
 
 1. Create a Brevo account using an existing Gmail or Outlook address. Complete any account/transactional-sending activation required by Brevo.
 2. Add a sender named TICKETÉ and verify the sender email using the code Brevo sends. A free mailbox domain cannot be authenticated; Brevo may rewrite the sender to its own domain for testing. Before launch, obtain a TICKETÉ domain and install the authentication records Brevo gives you.

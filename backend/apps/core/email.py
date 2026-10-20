@@ -1,9 +1,44 @@
+from smtplib import SMTPException
+
 from django.core.exceptions import ImproperlyConfigured
 from django.core.mail.backends.base import BaseEmailBackend
+from django.core.mail.backends.smtp import EmailBackend as DjangoSMTPBackend
 
 
 class MailDeliveryError(Exception):
     """Safe, credential-free provider failure that background jobs may retry."""
+
+
+class SafeSMTPEmailBackend(DjangoSMTPBackend):
+    """Django SMTP delivery with sanitized failures for Celery retries."""
+
+    def send_messages(self, email_messages):
+        if not self.username or not self.password:
+            raise ImproperlyConfigured(
+                "Set EMAIL_HOST_USER and EMAIL_HOST_PASSWORD privately before enabling SMTP."
+            )
+        if not (self.use_tls or self.use_ssl):
+            raise ImproperlyConfigured("SMTP delivery requires TLS or SSL.")
+        # Django's fail_silently handling would hide partial delivery failures.
+        # Use a separate connection so every error reaches this safe boundary.
+        try:
+            with DjangoSMTPBackend(
+                host=self.host,
+                port=self.port,
+                username=self.username,
+                password=self.password,
+                use_tls=self.use_tls,
+                use_ssl=self.use_ssl,
+                timeout=self.timeout,
+                fail_silently=False,
+            ) as connection:
+                return connection.send_messages(email_messages)
+        except (SMTPException, OSError):
+            if self.fail_silently:
+                return 0
+            raise MailDeliveryError(
+                "SMTP delivery failed. Check credentials, provider limits and network access."
+            ) from None
 
 
 class BrevoEmailBackend(BaseEmailBackend):

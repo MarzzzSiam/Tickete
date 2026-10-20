@@ -10,6 +10,10 @@ Start with the [Phase 0 review](docs/11-phase-0-review.md), [system design](docs
 
 ## Dated phase progress
 
+### 2026-10-20 — Gmail SMTP setup
+
+At the owner's request, added Django Gmail SMTP support for `hello.tickete@gmail.com`, superseding the original email-provider choice. Local and hosted worker settings support encrypted SMTP with private app-password credentials, sanitized delivery failures and existing Celery retries. Added a direct test-email command and [Gmail setup instructions](docs/15-transactional-email.md). Eight focused mocked email tests, Ruff, Black and Django system checks passed. Live SMTP/inbox and worker acceptance remain pending private credential setup; Phase 2 checkout has not started.
+
 Keep this history when updating the current status. Append a dated entry for each milestone or change of direction; distinguish implemented work from verified integrations.
 
 | Date | Phase | Work and verification | Remaining work |

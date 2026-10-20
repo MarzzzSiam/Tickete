@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-20 — Gmail SMTP support
+
+- Owner selected Gmail SMTP instead of the previously planned Brevo setup.
+- Added encrypted Django SMTP delivery, hosted worker support, safe errors and focused mocked tests.
+- Added explicit-recipient test-email command and private app-password instructions. No real email sent or credentials configured by this change.
+
 ## 2026-10-18 — event publishing and transactional email preparation
 
 - Added events, categories, custom fields, in-app notifications and admin audit models with additive migrations; owner/admin permissions, schedule checks and locked review transitions.

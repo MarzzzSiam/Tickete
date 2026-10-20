@@ -150,10 +150,19 @@ CACHES = {
 EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 EMAIL_PROVIDER = env("EMAIL_PROVIDER", default="console")
 BREVO_API_KEY = env("BREVO_API_KEY", default="")
+EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_USE_SSL = env.bool("EMAIL_USE_SSL", default=False)
+EMAIL_TIMEOUT = env.int("EMAIL_TIMEOUT", default=15)
 if EMAIL_PROVIDER == "brevo":
     EMAIL_BACKEND = "apps.core.email.BrevoEmailBackend"
+elif EMAIL_PROVIDER == "smtp":
+    EMAIL_BACKEND = "apps.core.email.SafeSMTPEmailBackend"
 elif EMAIL_PROVIDER not in ("console", "disabled"):
-    raise ImproperlyConfigured("EMAIL_PROVIDER must be console, disabled or brevo.")
+    raise ImproperlyConfigured("EMAIL_PROVIDER must be console, disabled, smtp or brevo.")
 elif EMAIL_PROVIDER == "disabled":
     EMAIL_BACKEND = "apps.core.email.UnconfiguredProductionEmailBackend"
 DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default="TICKETÉ <hello@example.invalid>")
