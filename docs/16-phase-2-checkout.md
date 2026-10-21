@@ -71,6 +71,12 @@ Email-OTP recovery/resend; expiry cleanup scheduling; deployment acceptance and 
 
 ## Verification — 2026-10-21
 
+### Account-isolation correction — 2026-10-21
+
+Checkout previously restored an event-scoped capability before resolving the logged-in account. This could show the previous account's confirmation after logout on a shared browser. Restoration now waits for a verified account response (or an explicit unauthenticated response), compares the saved account ID and session generation, and discards legacy entries without that context. Login/logout clears saved checkout access and publishes a random non-secret generation marker so other open checkout tabs clear themselves too. A failed identity lookup blocks restoration instead of falling back to guest access. Purchases are retained in the database; clearing local access does not cancel or delete orders.
+
+Regression scenarios cover same-account restoration, guest restoration, guest/account mismatch, switching accounts, legacy storage, logout in another tab, stale storage after logout and an unavailable identity service. Account login tests assert that local storage contains only the random generation marker, with no credentials or order tokens.
+
 [CI run 39556864201](https://github.com/MarzzzSiam/TICKETE/actions/runs/39556864201) passed 100 PostgreSQL-backed backend tests (89% coverage) and 20 browser tests. Coverage includes inventory races, repeated payment verification, private downloads, real PDF generation, gift receipts and retry behavior. Local production build, type checks, lint and schema validation passed. The final original licensed Playfair font was restored and its embedding verified locally, alongside Inter. Both pages of the fictional PDF were visually inspected and their QR codes decoded from rendered page images. Maximum-length title, venue and attendee fields were also visually checked.
 
 Applied `orders.0001`, `tickets.0001`/`0002`, `payments.0001` and `core.0003`/`0004` to the configured Supabase development database; `migrate --check` reports no pending migrations. No customer emails were sent during these checks. A live purchase with the local processor running is the remaining mailbox acceptance step.
