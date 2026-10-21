@@ -1,5 +1,7 @@
 "use client";
 
+import { changeCheckoutSession } from "@/lib/checkout-session";
+
 export type Profile = {
   id: string;
   email: string;
@@ -151,8 +153,22 @@ export async function apiRequest<T>(
   authenticated = false,
   checkoutToken?: string,
 ): Promise<T> {
-  const run = () =>
-    performAccountRequest<T>(path, method, body, authenticated, checkoutToken);
+  const run = async () => {
+    const result = await performAccountRequest<T>(
+      path,
+      method,
+      body,
+      authenticated,
+      checkoutToken,
+    );
+    if (
+      method === "POST" &&
+      (path === "auth/login" || path === "auth/logout")
+    ) {
+      changeCheckoutSession();
+    }
+    return result;
+  };
   // Serialize cookie rotations and CSRF bootstrap/write pairs across tabs.
   // A waiting tab retries its original request with the newly rotated cookies.
   if (typeof navigator !== "undefined" && navigator.locks) {

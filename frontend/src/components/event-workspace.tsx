@@ -29,6 +29,7 @@ export function EventPreview({ event }: { event: EventRecord }) {
       {event.has_banner && (
         <Image
           className="event-banner"
+          style={{ width: "100%", height: "auto" }}
           src={`${process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api/v1"}/events/${event.id}/banner/`}
           alt={`${event.title} banner`}
           width={1000}

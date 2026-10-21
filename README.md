@@ -4,6 +4,10 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-21 — checkout account isolation: saved checkout restoration now waits for identity verification and checks both the account and browser session generation. Login/logout clears checkout access across tabs; legacy unscoped entries are discarded. Guest reload restoration is retained within the same guest session. An unavailable account service blocks restoration rather than treating the visitor as a guest. Verified by [CI run 39565770545](https://github.com/MarzzzSiam/TICKETE/actions/runs/39565770545): 22 browser tests and the backend suite passed; local production build, type checking and lint passed.
+
+2026-10-21 — local delivery troubleshooting: a paid order remained queued with zero attempts because `process_ticket_jobs` was not running. Django's web server does not consume this queue; keep the processor terminal open alongside Django and Next.js. Corrected explicit banner sizing to avoid the unrelated Next.js image aspect-ratio warning. No ticket email was sent during this diagnostic check.
+
 2026-10-21 — verification: [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/39556864201) passed **100 backend tests and 20 browser tests**. Checkout/delivery migrations are applied to Supabase with none pending. The approved two-page PDF was rendered, visually reviewed, and both QR codes decoded. Real ticket-mailbox acceptance is still to be tested with the local processor running.
 
 2026-10-21 — Phase 2 checkout and approved PDF delivery implemented: paid-category selection, guest/account details, gifting, optional names, ten-minute inventory holds, per-order/per-email caps and idempotent simulated payment. The owner approved `/ticket-preview`; PDFs now include unique QR codes, private downloads and queued email/gift receipts. A free local processor replaces the need for a paid worker during development. Verification and migration status are tracked in [Phase 2 checkout](docs/16-phase-2-checkout.md). Recovery/resend and launch acceptance remain pending. The owner also confirmed event creation/viewing and real Gmail SMTP delivery.
