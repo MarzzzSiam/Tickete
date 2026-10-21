@@ -47,7 +47,7 @@ function Bars({
       {!rows.length ? (
         <p>No sales yet.</p>
       ) : (
-        <ul>
+        <ul tabIndex={0} aria-label={title}>
           {rows.map((r, i) => (
             <li key={`${r.label}-${i}`}>
               <div>
@@ -200,7 +200,12 @@ export function EventReport({ eventId }: { eventId: string }) {
               Sold includes cancelled tickets; cancellation does not issue a
               refund. Unlimited categories have no finite unsold count.
             </p>
-            <div className="report-table-wrap">
+            <div
+              className="report-table-wrap"
+              tabIndex={0}
+              role="region"
+              aria-label="Category breakdown table"
+            >
               <table>
                 <caption>
                   Capacity, purchases and attendance per category
