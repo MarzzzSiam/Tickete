@@ -50,6 +50,23 @@ test("guest reserves, pays and restores a simulated order", async ({
     .fill(`checkout-${info.project.name}-${Date.now()}@example.com`);
   await page.getByLabel("Gift these tickets").check();
   await page.getByLabel("Recipient email").fill("fictional-friend@example.com");
+  for (const label of ["Email address", "Recipient email"]) {
+    const field = page.getByLabel(label, { exact: true });
+    await expect(field).toHaveCSS("border-top-style", "solid");
+    expect(
+      await field.evaluate((el) =>
+        parseFloat(getComputedStyle(el).borderTopWidth),
+      ),
+    ).toBeGreaterThan(0);
+    expect(
+      await field.evaluate((el) => el.getBoundingClientRect().height),
+    ).toBeGreaterThanOrEqual(48);
+  }
+  await page.getByRole("heading", { name: "Who’s coming?" }).click();
+  await page.screenshot({
+    path: `../docs/screenshots/checkout-details-${info.project.name}.png`,
+    fullPage: true,
+  });
   // Attendee names intentionally left blank: the owner selected optional names.
   await page
     .getByRole("button", { name: "Reserve tickets", exact: true })

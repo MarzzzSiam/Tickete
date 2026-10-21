@@ -51,3 +51,19 @@ class TicketDelivery(models.Model):
     next_attempt_at = models.DateTimeField(default=timezone.now)
     completed_at = models.DateTimeField(null=True, blank=True)
     last_error = models.CharField(max_length=40, blank=True)
+    last_requested_at = models.DateTimeField(null=True, blank=True)
+
+
+class TicketRecovery(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField()
+    access_digest = models.CharField(max_length=64)
+    code_digest = models.CharField(max_length=64, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    expires_at = models.DateTimeField(null=True)
+    sent_at = models.DateTimeField(null=True)
+    verified_at = models.DateTimeField(null=True)
+    session_expires_at = models.DateTimeField(null=True)
+    attempts = models.PositiveIntegerField(default=0)
+    send_attempts = models.PositiveIntegerField(default=0)
+    next_attempt_at = models.DateTimeField(default=timezone.now)

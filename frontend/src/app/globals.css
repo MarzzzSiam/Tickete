@@ -908,7 +908,14 @@ h2 {
   font-weight: 600;
 }
 .field-input,
-.select-trigger {
+.select-trigger,
+:where(
+  input:not([type="checkbox"]):not([type="radio"]):not([type="hidden"]):not(
+      [type="range"]
+    ):not([type="submit"]):not([type="button"]),
+  textarea,
+  select
+) {
   padding: 13px 15px;
   min-height: 48px;
   border: 1.5px solid var(--ink);
@@ -916,6 +923,27 @@ h2 {
   width: 100%;
   background: var(--background);
   color: var(--ink);
+}
+.auth-form label:not(:has(input[type="checkbox"])) {
+  display: grid;
+  gap: 8px;
+}
+.auth-form label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+input[type="file"] {
+  border: 1.5px dashed var(--ink);
+  border-radius: 9px;
+  padding: 14px;
+  width: 100%;
+}
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--brand-500);
+  outline-offset: 3px;
 }
 .field-input::placeholder {
   color: var(--muted);
@@ -2125,6 +2153,10 @@ h2 {
 }
 .operations-page > section {
   margin-top: 24px;
+}
+.recovery-page .auth-card {
+  margin: 24px 0;
+  overflow-wrap: anywhere;
 }
 .operations-page .auth-form {
   margin: 16px 0;

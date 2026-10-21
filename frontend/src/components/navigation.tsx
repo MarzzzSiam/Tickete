@@ -9,7 +9,7 @@ import { ButtonLink } from "./ui";
 const links = [
   { href: "/events", label: "Explore events" },
   { href: "/team", label: "My event teams" },
-  { href: "/#for-organizers", label: "For organizers" },
+  { href: "/find-my-ticket", label: "Find my ticket" },
   { href: "/account", label: "My account" },
 ];
 export function Navigation() {

@@ -98,7 +98,7 @@ MEDIA_ROOT = BASE_DIR / "media"
 FRONTEND_ORIGIN = env("FRONTEND_ORIGIN", default="http://127.0.0.1:3000")
 CORS_ALLOWED_ORIGINS = [FRONTEND_ORIGIN]
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOW_HEADERS = [*default_headers, "x-checkout-token"]
+CORS_ALLOW_HEADERS = [*default_headers, "x-checkout-token", "x-recovery-token"]
 CSRF_TRUSTED_ORIGINS = [FRONTEND_ORIGIN]
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
@@ -126,6 +126,8 @@ REST_FRAMEWORK = {
         "operations": "180/minute",
         "scan": "600/minute",
         "team_invite": "30/hour",
+        "recovery": "30/minute",
+        "recovery_email": "5/hour",
     },
 }
 SPECTACULAR_SETTINGS = {

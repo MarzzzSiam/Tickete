@@ -20,6 +20,9 @@ export function Footer() {
           <Link href="/start">
             Become an organizer <ArrowUpRight size={16} />
           </Link>
+          <Link href="/find-my-ticket">
+            Find my ticket <ArrowUpRight size={16} />
+          </Link>
           <Link href="/#faq">
             A few answers <ArrowUpRight size={16} />
           </Link>
