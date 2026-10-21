@@ -60,4 +60,3 @@
 - Added one-page-per-ticket PDF generation, embedded brand fonts and private QR images.
 - Added a durable local delivery processor, retry tracking, gift receipts and capability-protected downloads.
 - Kept zero-cost local execution; no paid Render worker is needed. Recovery/resend remains pending.
-

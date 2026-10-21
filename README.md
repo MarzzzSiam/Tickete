@@ -4,7 +4,7 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
-2026-10-21 — Phase 2 started: the owner confirmed event creation/viewing and real SMTP email delivery. Implemented a first checkout increment: paid-category selection, guest/account details, gifting, optional names, ten-minute inventory holds, per-order/per-email caps, idempotent simulated payment and ticket records. A branded HTML ticket mock-up is at `/ticket-preview`, awaiting design approval before the PDF module. Automated checkout verification and development migrations are tracked in [Phase 2 checkout](docs/16-phase-2-checkout.md). Ticket PDF/email delivery and recovery are not complete. Zero-cost development remains the constraint.
+2026-10-21 — Phase 2 checkout and approved PDF delivery implemented: paid-category selection, guest/account details, gifting, optional names, ten-minute inventory holds, per-order/per-email caps and idempotent simulated payment. The owner approved `/ticket-preview`; PDFs now include unique QR codes, private downloads and queued email/gift receipts. A free local processor replaces the need for a paid worker during development. Verification and migration status are tracked in [Phase 2 checkout](docs/16-phase-2-checkout.md). Recovery/resend and launch acceptance remain pending. The owner also confirmed event creation/viewing and real Gmail SMTP delivery.
 
 2026-10-20 — budget update: the owner requires zero-cost development. Do not provision paid services. Local account email processing is available with `LOCAL_ACCOUNT_EMAIL_SYNC=True` in `backend/.env`; restart Django after changing it. No hosted worker is needed for these local verification/reset requests. Gmail SMTP remains unverified: encrypted connections succeeded but disconnected during authentication on both ports 587 and 465. To continue development without inbox delivery, set `EMAIL_PROVIDER=console` locally and use the private link printed in the Django terminal. Hosted launch and background job infrastructure remain unresolved; no promise of unlimited free hosting is made.
 
@@ -84,7 +84,6 @@ Keep the saved backend `.env`. The frontend API defaults to `http://127.0.0.1:80
 Signup/login require working PostgreSQL **and Redis**. A service-unavailable message requires checking backend logs and Redis connectivity, not bypassing throttles. Verification/reset emails still require the email provider and updated worker deployment before manual inbox testing. Never commit `.env` files or paste credentials into issue reports.
 
 CI runs lint, type checks, production build, browser accessibility tests and PostgreSQL-backed tests. The repository is connected to `MarzzzSiam/TICKETE`; the first manually dispatched passing run is recorded above. Pre-commit hooks are provided; activate the backend venv before `pre-commit install` and before committing.
-# 2026-10-21 — Phase 2 ticket PDF and delivery
+## 2026-10-21 — Phase 2 ticket PDF and delivery
 
 The ticket design is approved. Checkout now queues one PDF per order (one page per ticket), private downloads, ticket email and gift receipts. Run the free local processor in a separate backend terminal: `.\.venv\Scripts\python.exe manage.py process_ticket_jobs`. Keep it running while testing purchases. See [Phase 2 setup and status](docs/16-phase-2-checkout.md). Payment remains simulated; recovery/resend and scheduled expiry cleanup are still pending.
-
