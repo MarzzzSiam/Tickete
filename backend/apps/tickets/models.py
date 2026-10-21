@@ -1,6 +1,7 @@
 import secrets
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -27,6 +28,10 @@ class Ticket(models.Model):
         choices=[("valid", "Valid"), ("used", "Used"), ("cancelled", "Cancelled")],
     )
     position = models.PositiveIntegerField()
+    used_at = models.DateTimeField(null=True, blank=True)
+    used_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.PROTECT
+    )
 
     class Meta:
         ordering = ["position"]

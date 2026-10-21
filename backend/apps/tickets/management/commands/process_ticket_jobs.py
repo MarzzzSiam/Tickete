@@ -3,6 +3,7 @@ import time
 from django.core.management.base import BaseCommand
 from django.db import close_old_connections
 
+from apps.teams.services import process_invitation
 from apps.tickets.delivery import process_next
 
 
@@ -20,9 +21,12 @@ class Command(BaseCommand):
             while True:
                 close_old_connections()
                 result = process_next()
+                invitation_result = process_invitation()
+                if invitation_result:
+                    self.stdout.write(invitation_result)
                 if result:
                     self.stdout.write(result)
-                elif options["once"]:
+                elif options["once"] and not invitation_result:
                     break
                 else:
                     time.sleep(5)

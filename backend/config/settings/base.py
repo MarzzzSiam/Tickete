@@ -13,6 +13,8 @@ SECRET_KEY = env("SECRET_KEY", default="local-only-tickete-never-use-this-in-pro
 DEBUG = False
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS", default=["localhost", "127.0.0.1"])
 INSTALLED_APPS = [
+    "apps.teams",
+    "apps.checkin",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -121,9 +123,16 @@ REST_FRAMEWORK = {
         "auth_ip": "30/minute",
         "auth_email": "10/hour",
         "checkout": "120/minute",
+        "operations": "180/minute",
+        "scan": "600/minute",
+        "team_invite": "30/hour",
     },
 }
 SPECTACULAR_SETTINGS = {
+    "ENUM_NAME_OVERRIDES": {
+        "TeamRoleEnum": "apps.teams.models.ROLES",
+        "AccountRoleEnum": [("admin", "Admin"), ("organizer", "Organizer"), ("buyer", "Buyer")],
+    },
     "TITLE": "TICKETÉ API",
     "DESCRIPTION": "Authentication, event publishing and simulated ticket checkout APIs.",
     "VERSION": "0.1.0",

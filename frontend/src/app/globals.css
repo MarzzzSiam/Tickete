@@ -2123,3 +2123,56 @@ h2 {
     break-inside: avoid;
   }
 }
+.operations-page > section {
+  margin-top: 24px;
+}
+.operations-page .auth-form {
+  margin: 16px 0;
+}
+.operations-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.operations-stats strong {
+  display: block;
+  font-size: 2rem;
+  overflow-wrap: anywhere;
+}
+.operations-attendees {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.operations-attendees article,
+.operations-scanner {
+  overflow-wrap: anywhere;
+}
+.scanner-video {
+  display: block;
+  width: 100%;
+  max-width: 540px;
+  aspect-ratio: 4 / 3;
+  background: var(--ink);
+  border-radius: var(--radius-card);
+  margin-bottom: 16px;
+}
+.scanner-idle {
+  display: none;
+}
+.scan-result {
+  border: 2px solid currentColor;
+  border-radius: var(--radius-card);
+  padding: 20px;
+  margin-top: 20px;
+}
+.scan-admitted {
+  color: var(--success-text);
+  background: var(--success-bg);
+}
+.scan-rejected {
+  color: var(--danger-text);
+  background: var(--danger-bg);
+}

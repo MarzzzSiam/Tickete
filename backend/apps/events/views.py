@@ -60,8 +60,7 @@ class EventDetail(PrivateView, generics.RetrieveAPIView):
     serializer_class = EventSerializer
 
     def get_queryset(self):
-        services.require_organizer(self.request.user)
-        return Event.objects.filter(owner=self.request.user).prefetch_related(
+        return services.editable_events(self.request.user).prefetch_related(
             "categories", "form_fields"
         )
 
@@ -138,7 +137,7 @@ class BannerView(PrivateView, APIView):
         queryset = (
             Event.objects.all()
             if request.user.role == "admin"
-            else Event.objects.filter(owner=request.user)
+            else services.editable_events(request.user)
         )
         event = get_object_or_404(queryset, pk=pk)
         if not event.banner_key:
@@ -149,8 +148,7 @@ class BannerView(PrivateView, APIView):
 
     @extend_schema(request=BannerInput, responses=EventSerializer)
     def post(self, request, pk):
-        services.require_organizer(request.user)
-        event = get_object_or_404(Event, pk=pk, owner=request.user)
+        event = get_object_or_404(services.editable_events(request.user), pk=pk)
         services.editable(event)
         upload = validated(BannerInput, request)["banner"]
         if upload.size > 5 * 1024 * 1024:
@@ -182,7 +180,10 @@ class BannerView(PrivateView, APIView):
         key = f"banners/{event.pk}/{uuid.uuid4().hex}.jpg"
         get_storage().put(key, output.getvalue(), "image/jpeg")
         with transaction.atomic():
-            event = get_object_or_404(Event.objects.select_for_update(), pk=pk, owner=request.user)
+            event = get_object_or_404(
+                services.editable_events(request.user).select_for_update(), pk=pk
+            )
+            services.recheck_editor(request.user, event)
             services.editable(event)
             event.banner_key = key
             event.save(update_fields=["banner_key", "updated_at"])

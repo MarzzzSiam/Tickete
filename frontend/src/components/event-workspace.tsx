@@ -555,7 +555,8 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
         );
         if (!active) return;
         setProfile(user);
-        if (user.role !== "organizer") return;
+        if (user.role !== "organizer" && (!eventId || eventId === "new"))
+          return;
         if (eventId && eventId !== "new") {
           const item = await apiRequest<EventRecord>(
             `events/${eventId}`,
@@ -635,7 +636,7 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
         <p role="status">Loading…</p>
       ) : !profile ? (
         <ButtonLink href="/login">Log in</ButtonLink>
-      ) : profile.role !== "organizer" ? (
+      ) : profile.role !== "organizer" && !event ? (
         <p>
           An organizer account is required.{" "}
           <Link href="/account" className="auth-link">
@@ -656,6 +657,9 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
           )}
           {event && (
             <div className="event-status">
+              <ButtonLink href={`/organizer/events/${event.id}/operations`}>
+                Purchases, team and check-in
+              </ButtonLink>
               <Badge>{event.status}</Badge>
               {event.rejection_reason && (
                 <p>Review feedback: {event.rejection_reason}</p>

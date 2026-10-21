@@ -50,6 +50,8 @@ Resolve free tickets and name requiredness first. Implement confirmed per-order 
 
 ## Phase 3 — venue operations (MVP)
 
+2026-10-21: implemented purchase lists, team invitations/roles and single-use admission at the owner’s request. Database migrations applied; see `17-phase-3-venue-operations.md` for verification and local acceptance. Physical phone-camera and real invitation-mailbox checks remain pending; Phase 2 recovery/resend and scheduled cleanup remain on the backlog.
+
 Invitations and verified acceptance, member roles/revocation, camera and manual scanning, atomic single-use admission, cancellation, all scan outcomes and live count. Test simultaneous scans, wrong event, role boundaries and revocation. Check 360 px device usability and camera permissions over HTTPS. Review before Phase 4.
 
 ## Phase 4 — reporting and launch (MVP)

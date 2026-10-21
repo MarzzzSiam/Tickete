@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.text import slugify
@@ -20,6 +21,29 @@ class StateConflict(APIException):
 def require_organizer(user):
     if user.role != User.Role.ORGANIZER:
         raise PermissionDenied("An organizer account is required.")
+
+
+def editable_events(user):
+    from apps.teams.models import TeamMember
+
+    if user.role == User.Role.ADMIN:
+        raise PermissionDenied("Admins review events but do not edit them.")
+    query = Q(owner=user)
+    if user.email_verified:
+        query |= Q(
+            pk__in=TeamMember.objects.filter(user=user, role="manager", active=True).values(
+                "event_id"
+            )
+        )
+    return Event.objects.filter(query)
+
+
+def recheck_editor(user, event):
+    # Recheck after the event lock, which also serializes team revocation.
+    if event.owner_id != user.pk:
+        from apps.teams.services import require_role
+
+        require_role(user, event, {"manager"})
 
 
 def require_admin(user):
@@ -71,12 +95,14 @@ def replace_children(event, relation, model, rows):
 
 @transaction.atomic
 def save_draft(user, data, event_id=None):
-    require_organizer(user)
+    if not event_id:
+        require_organizer(user)
     event = (
-        get_object_or_404(Event.objects.select_for_update(), pk=event_id, owner=user)
+        get_object_or_404(editable_events(user).select_for_update(), pk=event_id)
         if event_id
         else Event(owner=user)
     )
+    recheck_editor(user, event)
     editable(event)
     data = dict(data)
     categories = data.pop("categories", None)
@@ -95,11 +121,11 @@ def save_draft(user, data, event_id=None):
 
 @transaction.atomic
 def submit(user, event_id):
-    require_organizer(user)
     # Always read current verification state, not JWT claims or browser state.
     if not User.objects.get(pk=user.pk).email_verified:
         raise PermissionDenied("Verify your email before submitting an event.")
-    event = get_object_or_404(Event.objects.select_for_update(), pk=event_id, owner=user)
+    event = get_object_or_404(editable_events(user).select_for_update(), pk=event_id)
+    recheck_editor(user, event)
     if event.status != Event.Status.DRAFT:
         raise StateConflict("Save a draft before submitting it.")
     validate_schedule(event, complete=True)

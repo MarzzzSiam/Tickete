@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-21 — venue operations
+
+- Added organizer purchase totals and email search, event team invitations/roles/revocation, camera/manual admission and scan history.
+- Added atomic duplicate rejection, cancellation at the gate, role privacy boundaries and concurrency regression tests.
+- Retained free local processing for invitation delivery; Phase 2 recovery and Phase 4 reporting remain pending.
+
 ## 2026-10-21 — Phase 2 checkout and ticket design preview
 
 - Recorded owner-confirmed event and Gmail delivery acceptance, zero-cost constraint, excluded free tickets and optional attendee names.
