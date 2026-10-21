@@ -22,6 +22,9 @@ REST_FRAMEWORK = {
         "auth_ip": "1000/min",
         "auth_email": "1000/hour",
         "checkout": "1000/min",
+        "operations": "1000/min",
+        "scan": "1000/min",
+        "team_invite": "1000/hour",
     },
 }
 EMAIL_BACKEND = "django.core.mail.backends.locmem.EmailBackend"

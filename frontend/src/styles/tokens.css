@@ -13,6 +13,8 @@
   --highlight: #ffd43b;
   --pink-accent: #ff5fa2;
   --success-text: #07633a;
+  --success-bg: #eefbf4;
+  --danger-bg: #fff1f1;
   --danger-text: #a31c23;
   --warning-text: #754600;
   --shadow: 4px 4px 0 var(--ink);

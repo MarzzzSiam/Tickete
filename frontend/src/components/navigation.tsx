@@ -8,7 +8,7 @@ import { ButtonLink } from "./ui";
 
 const links = [
   { href: "/events", label: "Explore events" },
-  { href: "/#how-it-works", label: "How it works" },
+  { href: "/team", label: "My event teams" },
   { href: "/#for-organizers", label: "For organizers" },
   { href: "/account", label: "My account" },
 ];

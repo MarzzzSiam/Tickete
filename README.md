@@ -4,6 +4,8 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-21 — Phase 3 started after owner-confirmed ticket email delivery: implementing organizer purchase visibility, accepted email invitations, event roles, camera/manual check-in and atomic duplicate-entry rejection. The existing free local processor also handles invitations. See [venue operations](docs/17-phase-3-venue-operations.md); verification and migrations are in progress.
+
 2026-10-21 — checkout account isolation: saved checkout restoration now waits for identity verification and checks both the account and browser session generation. Login/logout clears checkout access across tabs; legacy unscoped entries are discarded. Guest reload restoration is retained within the same guest session. An unavailable account service blocks restoration rather than treating the visitor as a guest. Verified by [CI run 39565770545](https://github.com/MarzzzSiam/TICKETE/actions/runs/39565770545): 22 browser tests and the backend suite passed; local production build, type checking and lint passed.
 
 2026-10-21 — local delivery troubleshooting: a paid order remained queued with zero attempts because `process_ticket_jobs` was not running. Django's web server does not consume this queue; keep the processor terminal open alongside Django and Next.js. Corrected explicit banner sizing to avoid the unrelated Next.js image aspect-ratio warning. No ticket email was sent during this diagnostic check.
