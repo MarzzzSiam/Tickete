@@ -1,5 +1,7 @@
 # Task breakdown
 
+2026-10-21 update: checkout and the approved ticket PDF, private download and local email processor are implemented. CI passed 100 backend and 20 browser tests; Supabase checkout/delivery migrations are applied. Email-OTP ticket recovery/resend, scheduled expiry cleanup and launch acceptance remain pending. See `16-phase-2-checkout.md` for the current milestone.
+
 Status: implementation plan approved on 2026-10-07. As of 2026-10-18, authentication and event publishing are implemented and pass isolated CI; Supabase migrations are current. Live worker/email, hosted storage and final manual acceptance remain open. See the dated root README and `14-phase-1-event-publishing.md` for current evidence; earlier entries below preserve milestone history.
 
 ## Preparation

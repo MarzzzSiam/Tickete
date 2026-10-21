@@ -68,3 +68,9 @@ Failed jobs report only `pdf_failed` or `email_failed`, without provider secrets
 ## Still required before Phase 2 is complete
 
 Email-OTP recovery/resend; expiry cleanup scheduling; deployment acceptance and a real end-to-end user mailbox check. Gate scanning is a later phase: the ticket QR is generated now but no gate-validation UI is claimed complete. Payment is still simulated.
+
+## Verification — 2026-10-21
+
+[CI run 39556864201](https://github.com/MarzzzSiam/TICKETE/actions/runs/39556864201) passed 100 PostgreSQL-backed backend tests (89% coverage) and 20 browser tests. Coverage includes inventory races, repeated payment verification, private downloads, real PDF generation, gift receipts and retry behavior. Local production build, type checks, lint and schema validation passed. The final original licensed Playfair font was restored and its embedding verified locally, alongside Inter. Both pages of the fictional PDF were visually inspected and their QR codes decoded from rendered page images. Maximum-length title, venue and attendee fields were also visually checked.
+
+Applied `orders.0001`, `tickets.0001`/`0002`, `payments.0001` and `core.0003`/`0004` to the configured Supabase development database; `migrate --check` reports no pending migrations. No customer emails were sent during these checks. A live purchase with the local processor running is the remaining mailbox acceptance step.
