@@ -1,5 +1,7 @@
 # Phase 3 — organizer sales and venue operations
 
+2026-10-21 follow-up: the previously deferred recovery/resend and scheduled hold cleanup are now implemented in [ticket recovery](18-ticket-recovery.md), with integration tests passing and database migrations applied. Reporting and launch acceptance remain separate.
+
 ## 2026-10-21 — implementation
 
 The owner confirmed ticket PDF email delivery works and requested organizer purchase visibility, volunteer invitations and single-use check-in. This advances the venue stage while keeping unfinished Phase 2 recovery/resend and scheduled expiry cleanup on the backlog.
