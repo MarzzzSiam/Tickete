@@ -58,6 +58,8 @@ Invitations and verified acceptance, member roles/revocation, camera and manual 
 
 ## Phase 4 — reporting and launch (MVP)
 
+2026-10-22: live reporting charts, category totals, attendance and owner-only closure snapshots implemented. Public-page motion requested by the owner is included with reduced-motion/pause controls. Verified by 134 backend and 30 browser tests; database migration applied. Details are in `19-reporting-and-motion.md`; deployment, load testing and backup/restore acceptance remain open.
+
 Dashboard charts, final report/close, cancelled/unlimited category behavior, performance/load and security checks, observability, deployment manifests, backups/restore drill and staging end-to-end acceptance. Confirm hosting, sender domain and Supabase credentials. Production launch requires verified integrations and user release decision.
 
 ## Phase 5 — V2, separate approval
