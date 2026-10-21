@@ -183,6 +183,7 @@ class BannerView(PrivateView, APIView):
             event = get_object_or_404(
                 services.editable_events(request.user).select_for_update(), pk=pk
             )
+            services.recheck_editor(request.user, event)
             services.editable(event)
             event.banner_key = key
             event.save(update_fields=["banner_key", "updated_at"])

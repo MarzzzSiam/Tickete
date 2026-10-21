@@ -89,11 +89,13 @@ export function EventOperations({ eventId }: { eventId: string }) {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [camera, setCamera] = useState(false);
+  const [cameraStarting, setCameraStarting] = useState(false);
   const [loading, setLoading] = useState(true);
   const video = useRef<HTMLVideoElement>(null);
   const scanner = useRef<QrScanner | null>(null);
   const scanning = useRef(false);
   const mounted = useRef(true);
+  const loadVersion = useRef(0);
   const base = `events/${eventId}`;
   const stop = useCallback(() => {
     scanner.current?.destroy();
@@ -101,6 +103,8 @@ export function EventOperations({ eventId }: { eventId: string }) {
     setCamera(false);
   }, []);
   const load = useCallback(async () => {
+    const version = ++loadVersion.current;
+    const current = () => mounted.current && version === loadVersion.current;
     try {
       const info = await apiRequest<Summary>(
         `${base}/operations`,
@@ -108,7 +112,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
         undefined,
         true,
       );
-      if (!mounted.current) return;
+      if (!current()) return;
       setSummary(info);
       if (["owner", "manager", "admin"].includes(info.role)) {
         const list = await apiRequest<typeof attendees>(
@@ -117,7 +121,8 @@ export function EventOperations({ eventId }: { eventId: string }) {
           undefined,
           true,
         );
-        if (mounted.current) setAttendees(list);
+        if (!current()) return;
+        setAttendees(list);
       } else setAttendees(null);
       if (info.role === "owner") {
         const members = await apiRequest<Team>(
@@ -126,10 +131,11 @@ export function EventOperations({ eventId }: { eventId: string }) {
           undefined,
           true,
         );
-        if (mounted.current) setTeam(members);
+        if (!current()) return;
+        setTeam(members);
       } else setTeam(null);
     } catch (e) {
-      if (mounted.current) {
+      if (current()) {
         setError(describe(e));
         setSummary(null);
         setAttendees(null);
@@ -138,7 +144,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
         stop();
       }
     } finally {
-      if (mounted.current) setLoading(false);
+      if (current()) setLoading(false);
     }
   }, [base, page, query, stop]);
   useEffect(() => {
@@ -153,6 +159,9 @@ export function EventOperations({ eventId }: { eventId: string }) {
     window.addEventListener("storage", storage);
     return () => {
       mounted.current = false;
+      // This counter invalidates requests; it is not a DOM ref.
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      loadVersion.current++;
       clearTimeout(initial);
       clearInterval(timer);
       scanner.current?.destroy();
@@ -195,6 +204,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
     scanning.current = false;
   }
   async function startCamera() {
+    if (cameraStarting) return;
     setError("");
     setResult(null);
     if (!window.isSecureContext) {
@@ -203,6 +213,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
       );
       return;
     }
+    setCameraStarting(true);
     try {
       stop();
       const { default: Reader } = await import("qr-scanner");
@@ -228,10 +239,12 @@ export function EventOperations({ eventId }: { eventId: string }) {
       setError(
         "Camera could not start. Allow camera access or type the ticket ID below.",
       );
+    } finally {
+      if (mounted.current) setCameraStarting(false);
     }
   }
   return (
-    <main id="main" className="container account-page">
+    <main id="main" className="container account-page operations-page">
       <Pill>EVENT OPERATIONS</Pill>
       <h1>{summary?.title || "Your event workspace"}</h1>
       <p>
@@ -320,7 +333,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
               />
               <div className="auth-actions">
                 <Button
-                  disabled={busy || camera}
+                  disabled={busy || camera || cameraStarting}
                   onClick={() => void startCamera()}
                 >
                   Start QR camera
@@ -340,6 +353,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
               >
                 <label htmlFor="manual-ticket">Ticket ID</label>
                 <input
+                  className="field-input"
                   id="manual-ticket"
                   value={ticketId}
                   onChange={(e) => setTicketId(e.target.value)}
@@ -387,7 +401,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
                 separately from buyers.
               </p>
               <form
-                className="auth-actions"
+                className="auth-form"
                 onSubmit={(e) => {
                   e.preventDefault();
                   setPage(1);
@@ -398,6 +412,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
                   Search email, name or ticket ID
                 </label>
                 <input
+                  className="field-input"
                   id="attendee-search"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -491,6 +506,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
                   Volunteer or teammate email
                 </label>
                 <input
+                  className="field-input"
                   id="invite-email"
                   type="email"
                   required
@@ -499,6 +515,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
                 />
                 <label htmlFor="invite-role">Invitation role</label>
                 <select
+                  className="field-input"
                   id="invite-role"
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
@@ -520,6 +537,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
                     Role for {m.user__email}
                   </label>
                   <select
+                    className="field-input"
                     id={`role-${m.id}`}
                     value={m.role}
                     disabled={busy || !m.active}

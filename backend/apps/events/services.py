@@ -38,6 +38,14 @@ def editable_events(user):
     return Event.objects.filter(query)
 
 
+def recheck_editor(user, event):
+    # Recheck after the event lock, which also serializes team revocation.
+    if event.owner_id != user.pk:
+        from apps.teams.services import require_role
+
+        require_role(user, event, {"manager"})
+
+
 def require_admin(user):
     if user.role != User.Role.ADMIN:
         raise PermissionDenied("Administrator access is required.")
@@ -94,6 +102,7 @@ def save_draft(user, data, event_id=None):
         if event_id
         else Event(owner=user)
     )
+    recheck_editor(user, event)
     editable(event)
     data = dict(data)
     categories = data.pop("categories", None)
@@ -116,6 +125,7 @@ def submit(user, event_id):
     if not User.objects.get(pk=user.pk).email_verified:
         raise PermissionDenied("Verify your email before submitting an event.")
     event = get_object_or_404(editable_events(user).select_for_update(), pk=event_id)
+    recheck_editor(user, event)
     if event.status != Event.Status.DRAFT:
         raise StateConflict("Save a draft before submitting it.")
     validate_schedule(event, complete=True)
