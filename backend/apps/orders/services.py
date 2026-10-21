@@ -347,3 +347,21 @@ def result(order):
         "delivery_status": delivery_status(order),
         "pdf_ready": TicketDelivery.objects.filter(order=order).exclude(pdf_key="").exists(),
     }
+
+
+def cleanup_expired_holds(limit=100):
+    """Use the same event-before-order locking order as checkout/payment."""
+    ids = list(
+        Order.objects.filter(status="pending", expires_at__lte=timezone.now())
+        .order_by("expires_at")
+        .values_list("pk", "event_id")[:limit]
+    )
+    count = 0
+    for order_id, event_id in ids:
+        with transaction.atomic():
+            event = Event.objects.select_for_update().get(pk=event_id)
+            order = Order.objects.select_for_update().get(pk=order_id)
+            if order.status == "pending" and order.expires_at <= timezone.now():
+                expire_if_needed(event, order)
+                count += 1
+    return count

@@ -1,5 +1,7 @@
 # Phase 2 — checkout increment, 2026-10-21
 
+2026-10-21 follow-up: recovery/resend and scheduled expired-hold cleanup are now implemented; see [ticket recovery](18-ticket-recovery.md). Earlier pending statements below describe the original checkout increment. Venue operations are implemented in [Phase 3](17-phase-3-venue-operations.md).
+
 The owner reports event creation/viewing and direct Gmail SMTP delivery working. These are user-confirmed manual results; a hosted worker has not been deployed. Zero-cost development remains required.
 
 ## Decisions confirmed today

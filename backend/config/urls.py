@@ -8,6 +8,7 @@ urlpatterns = [path("api/v1/health/", HealthView.as_view(), name="health")]
 urlpatterns += [path("api/v1/auth/", include("apps.accounts.urls"))]
 urlpatterns += [path("api/v1/", include("apps.events.urls"))]
 urlpatterns += [path("api/v1/", include("apps.orders.urls"))]
+urlpatterns += [path("api/v1/", include("apps.tickets.urls"))]
 urlpatterns += [path("api/v1/", include("apps.checkin.urls"))]
 if settings.DEBUG:
     urlpatterns += [
