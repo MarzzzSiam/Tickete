@@ -1,5 +1,7 @@
 # Changelog
 
+2026-10-22 — Added reporting charts and immutable closure snapshots; public-page particles, hero float and category crawl with accessible motion controls. Updated stale homepage checkout availability text. See `19-reporting-and-motion.md`.
+
 2026-10-21 — Added emailed-code ticket recovery, recipient-only private PDF access, resend to original delivery addresses, bounded retries and expired-hold cleanup in the free local processor. Fixed invisible native form fields across checkout and event creation with borders, spacing and keyboard focus. Verification is tracked in `18-ticket-recovery.md`.
 
 ## 2026-10-21 — venue operations

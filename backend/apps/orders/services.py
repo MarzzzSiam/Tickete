@@ -36,6 +36,7 @@ def authorize(order, token):
 def sales_open(event, now):
     return bool(
         event.status == Event.Status.APPROVED
+        and not event.closed_at
         and event.sales_start
         and event.sales_end
         and event.ends_at

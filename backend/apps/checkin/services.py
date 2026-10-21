@@ -25,7 +25,7 @@ def scan(user, event_id, value, method):
         .first()
     )
     result = "invalid"
-    if event.status != "approved":
+    if event.status != "approved" or event.closed_at:
         result = "event_unavailable"
     elif not ticket:
         if Ticket.objects.filter(**lookup).exists():
@@ -70,6 +70,8 @@ def scan(user, event_id, value, method):
 def cancel(user, event_id, ticket_id):
     event = get_object_or_404(Event.objects.select_for_update(), pk=event_id)
     require_role(user, event, ["owner"])
+    if event.closed_at:
+        raise ValidationError("This event is closed; its final report is fixed.")
     ticket = get_object_or_404(Ticket, pk=ticket_id, order__event=event)
     if ticket.status == "used":
         raise ValidationError("A checked-in ticket cannot be cancelled.")
