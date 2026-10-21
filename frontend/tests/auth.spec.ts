@@ -119,7 +119,15 @@ test("real API signup, login, session refresh, profile and logout", async ({
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Hello, Updated Tester.",
   );
-  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([]);
+  // Cross-tab checkout invalidation uses only a random marker, never credentials.
+  expect(await page.evaluate(() => Object.keys(localStorage))).toEqual([
+    "tickete-checkout-session",
+  ]);
+  expect(
+    await page.evaluate(() => localStorage.getItem("tickete-checkout-session")),
+  ).toMatch(
+    /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/,
+  );
   expect(
     (
       await new AxeBuilder({ page })
