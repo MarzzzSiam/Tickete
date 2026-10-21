@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono, Playfair_Display } from "next/font/google";
 import { Navigation } from "@/components/navigation";
 import { Footer } from "@/components/footer";
 import "./globals.css";
+import { AmbientMotion } from "@/components/ambient-motion";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -55,6 +56,7 @@ export default function RootLayout({
         <a className="skip-link" href="#main">
           Skip to content
         </a>
+        <AmbientMotion />
         <Navigation />
         {children}
         <Footer />

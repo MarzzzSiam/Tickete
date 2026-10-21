@@ -25,6 +25,7 @@ export type EventRecord = {
   ends_at: string | null;
   sales_start: string | null;
   sales_end: string | null;
+  closed_at?: string | null;
   max_per_order: number;
   collect_attendee_names: boolean;
   categories: Category[];

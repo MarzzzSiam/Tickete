@@ -40,15 +40,15 @@ const faqs = [
   ],
   [
     "Can I buy tickets right now?",
-    "Not just yet. You’re exploring our first design preview. Events and ticket purchases will become available as the platform launches.",
+    "You can explore approved events and try checkout. Payments are currently simulated; no money is charged.",
   ],
   [
     "Will I need an account to buy a ticket?",
-    "Guest checkout is part of the planned experience. You’ll be able to buy with your email, or sign in to have it filled in for you.",
+    "You can check out with your email as a guest, or sign in to have it filled in for you.",
   ],
   [
     "Can I send a ticket as a gift?",
-    "Yes, gifting is part of the planned experience. Enter your recipient’s email at checkout: they’ll receive the tickets, and you’ll receive a receipt.",
+    "Yes. Enter your recipient’s email at checkout: they’ll receive the tickets, and you’ll receive a receipt.",
   ],
 ];
 export default function Home() {
@@ -88,20 +88,28 @@ export default function Home() {
         <HeroTicket />
       </section>
       <div className="category-strip" aria-label="Event possibilities">
-        <div className="container strip-inner">
-          {[
-            "LIVE MUSIC",
-            "CAMPUS CULTURE",
-            "NEW IDEAS",
-            "CREATIVE PEOPLE",
-            "GOOD TIMES",
-          ].map((item) => (
-            <span key={item}>
-              {item}
-              <span className="strip-star" aria-hidden="true">
-                ✳
-              </span>
-            </span>
+        <div className="marquee-track">
+          {[0, 1].map((copy) => (
+            <div
+              className="marquee-group"
+              key={copy}
+              aria-hidden={copy === 1 ? true : undefined}
+            >
+              {[
+                "LIVE MUSIC",
+                "CAMPUS CULTURE",
+                "NEW IDEAS",
+                "CREATIVE PEOPLE",
+                "GOOD TIMES",
+              ].map((item) => (
+                <span key={item}>
+                  {item}
+                  <span className="strip-star" aria-hidden="true">
+                    ✳
+                  </span>
+                </span>
+              ))}
+            </div>
           ))}
         </div>
       </div>

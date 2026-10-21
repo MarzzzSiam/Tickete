@@ -63,7 +63,7 @@ const outcomes: Record<string, string> = {
   cancelled: "Ticket cancelled",
   wrong_event: "Ticket belongs to another event",
   invalid: "Ticket not found",
-  event_unavailable: "Event is not approved for admission",
+  event_unavailable: "Event is closed or unavailable for admission",
 };
 const describe = (e: unknown) =>
   e instanceof AccountError
@@ -278,6 +278,16 @@ export function EventOperations({ eventId }: { eventId: string }) {
             Your role: <strong>{summary.role}</strong>. Counts refresh every 15
             seconds.
           </p>
+          {summary.role !== "scanner" && (
+            <p>
+              <Link
+                className="text-link"
+                href={`/organizer/events/${eventId}/report`}
+              >
+                Dashboard and final report →
+              </Link>
+            </p>
+          )}
           <div className="operations-stats">
             <div className="card auth-card">
               <span>Tickets purchased</span>

@@ -20,7 +20,7 @@ test("landing is usable, accessible and honest about availability", async ({
   ).toBeVisible();
   await page.getByText("Can I buy tickets right now?", { exact: true }).click();
   await expect(
-    page.getByText(/You’re exploring our first design preview/),
+    page.getByText(/Payments are currently simulated/),
   ).toBeVisible();
   const accessibility = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])

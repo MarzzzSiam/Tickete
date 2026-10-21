@@ -80,12 +80,18 @@ export default async function Page({ params }: Props) {
             Maximum {event.max_per_order} per order and per buyer email for this
             event.
           </p>
-          <ButtonLink href={`/events/${slug}/checkout`}>
-            Choose tickets
-          </ButtonLink>
+          {event.closed_at ? (
+            <p className="auth-notice">
+              This event has ended. Ticket sales and admission are closed.
+            </p>
+          ) : (
+            <ButtonLink href={`/events/${slug}/checkout`}>
+              Choose tickets
+            </ButtonLink>
+          )}
           <p className="auth-notice">
-            Test checkout · no real money is charged. PDF and email delivery are
-            still being built.
+            Test checkout · no real money is charged. Tickets are delivered by
+            email.
           </p>
         </section>
       </div>

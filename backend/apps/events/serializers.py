@@ -96,6 +96,7 @@ class PublicEventSerializer(serializers.ModelSerializer):
             "ends_at",
             "sales_start",
             "sales_end",
+            "closed_at",
             "max_per_order",
             "collect_attendee_names",
             "categories",
