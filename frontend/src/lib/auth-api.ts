@@ -23,6 +23,27 @@ const base = (
   process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000/api/v1"
 ).replace(/\/$/, "");
 
+export async function downloadTickets(orderId: string, token: string) {
+  const run = () =>
+    fetch(`${base}/orders/${orderId}/tickets.pdf`, {
+      credentials: "include",
+      cache: "no-store",
+      headers: { "X-Checkout-Token": token },
+      signal: AbortSignal.timeout(30000),
+    });
+  let response = await run();
+  if (response.status === 401) {
+    await refresh();
+    response = await run();
+  }
+  if (!response.ok)
+    throw new AccountError(
+      "Tickets are not ready to download. Refresh order status and try again.",
+      response.status,
+    );
+  return response.blob();
+}
+
 async function request<T>(
   path: string,
   method = "GET",

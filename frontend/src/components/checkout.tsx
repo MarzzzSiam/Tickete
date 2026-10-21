@@ -6,6 +6,7 @@ import {
   accountRequest,
   apiRequest,
   AccountError,
+  downloadTickets,
   type Profile,
 } from "@/lib/auth-api";
 import { dhakaTime, type EventRecord } from "@/lib/events";
@@ -21,6 +22,8 @@ type Order = {
   server_time: string;
   recipient_email: string;
   is_gift: boolean;
+  delivery_status: string;
+  pdf_ready: boolean;
   payment: null | {
     provider: string;
     status: string;
@@ -584,13 +587,44 @@ export function Checkout({ event }: { event: EventRecord }) {
                   </article>
                 ))}
                 <p className="auth-notice">
-                  PDF, scannable QR display and ticket email delivery are not
-                  available in this increment. No ticket email has been sent.
+                  {order.delivery_status === "sent"
+                    ? "Your ticket email was accepted by the mail service. Check your inbox and spam folder."
+                    : order.delivery_status === "failed"
+                      ? "Ticket delivery needs attention. Contact support with your order number."
+                      : "Your ticket PDF and email are queued. Refresh the status shortly."}{" "}
                   Keep this browser tab to return to your order.
                 </p>
-                <Link href="/ticket-preview">
-                  Preview the proposed ticket design
-                </Link>
+                <Button
+                  variant="secondary"
+                  disabled={busy}
+                  onClick={() =>
+                    void action(() => orderAction("status", undefined, "GET"))
+                  }
+                >
+                  Refresh order status
+                </Button>
+                {order.pdf_ready && (
+                  <Button
+                    disabled={busy}
+                    onClick={() =>
+                      void action(async () => {
+                        if (!saved) return;
+                        const blob = await downloadTickets(
+                          order.id,
+                          saved.token,
+                        );
+                        const url = URL.createObjectURL(blob);
+                        const link = document.createElement("a");
+                        link.href = url;
+                        link.download = `${order.number}.pdf`;
+                        link.click();
+                        setTimeout(() => URL.revokeObjectURL(url), 30000);
+                      })
+                    }
+                  >
+                    Download tickets PDF
+                  </Button>
+                )}
               </>
             )}
           </section>

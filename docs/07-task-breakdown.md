@@ -1,5 +1,7 @@
 # Task breakdown
 
+2026-10-21 update: checkout and the approved ticket PDF, private download and local email processor are implemented. CI passed 100 backend and 20 browser tests; Supabase checkout/delivery migrations are applied. Email-OTP ticket recovery/resend, scheduled expiry cleanup and launch acceptance remain pending. See `16-phase-2-checkout.md` for the current milestone.
+
 Status: implementation plan approved on 2026-10-07. As of 2026-10-18, authentication and event publishing are implemented and pass isolated CI; Supabase migrations are current. Live worker/email, hosted storage and final manual acceptance remain open. See the dated root README and `14-phase-1-event-publishing.md` for current evidence; earlier entries below preserve milestone history.
 
 ## Preparation
@@ -41,6 +43,8 @@ Done when both apps run, README setup is tested, database connection status is e
 2026-10-18 event-publishing follow-up: implemented items 2–4 and automated create/submit/approve/public-page coverage. CI passed 70 backend tests and 16 browser tests. Applied event, notification, audit and privacy migrations to Supabase; verified no pending migrations and RLS/browser-role restrictions on 17 tables. Brevo account-email adapter is prepared, with private setup in `15-transactional-email.md`. Live delivery, hosted storage, manual review, expanded listing filters and the full three-category demo event remain outstanding; this does not mark the entire phase complete.
 
 ## Phase 2 — purchasing and delivery (MVP)
+
+2026-10-21: started at the owner's request after they confirmed events and SMTP work. Free tickets excluded; attendee names optional. Added checkout/order/hold/payment/ticket foundation and HTML ticket design preview. PDF module awaits the required design review; ticket delivery/recovery remain outstanding. See `16-phase-2-checkout.md` for verification and current boundaries.
 
 Resolve free tickets and name requiredness first. Implement confirmed per-order and per-email/event caps, holds/order snapshots/idempotency and PostgreSQL races; dummy gateway/OTP and failure recovery; ticket issuance; approved HTML mock-up then PDF/QR; Celery delivery and reconciliation; confirmation/gifting/download; recovery by email OTP in Phase 2. Test guest and registered journeys, same-email races across categories, last-seat contention, retries, expiry races, private access, and multi-page PDF scanability. Review before Phase 3.
 

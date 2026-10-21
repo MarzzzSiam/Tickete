@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-10-21 — Phase 2 checkout and ticket design preview
+
+- Recorded owner-confirmed event and Gmail delivery acceptance, zero-cost constraint, excluded free tickets and optional attendee names.
+- Added reserved orders, category holds, simulated payment attempts, ticket issuance, capability authorization, idempotency and PostgreSQL race tests.
+- Connected four-step responsive checkout and truthful confirmation states; prepared a branded HTML ticket mock-up for approval before PDF implementation.
+
 ## 2026-10-20 — Gmail SMTP support
 
 - Recorded the zero-cost constraint and deferred paid worker provisioning. Added opt-in local synchronous account-email processing, guarded by DEBUG, and a console-mail fallback guide. Hosted processing remains queued.
@@ -49,3 +55,8 @@
 - Recorded source conflicts, operational risks and product questions explicitly.
 - User confirmed limits per order AND per email/event; MD is the latest authority for other document differences. Updated the serialized inventory and cap design accordingly.
 - No application code, tests, migrations, provider connection, deployment or production claims in this baseline.
+# 2026-10-21 — approved ticket PDF implementation
+
+- Added one-page-per-ticket PDF generation, embedded brand fonts and private QR images.
+- Added a durable local delivery processor, retry tracking, gift receipts and capability-protected downloads.
+- Kept zero-cost local execution; no paid Render worker is needed. Recovery/resend remains pending.

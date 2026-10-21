@@ -65,14 +65,16 @@ test("guest reserves, pays and restores a simulated order", async ({
   await page.getByRole("button", { name: "Continue to test OTP" }).click();
   await page.getByLabel("Test OTP", { exact: true }).fill("000000");
   await page.getByRole("button", { name: "Confirm test payment" }).click();
-  await expect(page.getByRole("alert")).toContainText("Incorrect test code");
+  await expect(
+    page.getByRole("alert").filter({ hasText: "Incorrect test code" }),
+  ).toBeVisible();
   await page.getByLabel("Test OTP", { exact: true }).fill("123456");
   await page.getByRole("button", { name: "Confirm test payment" }).click();
   await expect(
     page.getByRole("heading", { name: "You’re on the list." }),
   ).toBeVisible();
   await expect(
-    page.getByText("No ticket email has been sent.", { exact: false }),
+    page.getByText("Your ticket PDF and email are queued.", { exact: false }),
   ).toBeVisible();
   await page.reload();
   await expect(

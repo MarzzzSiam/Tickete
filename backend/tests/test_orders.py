@@ -190,7 +190,7 @@ def test_api_requires_csrf_and_capability(event, category):
     assert result.status_code == 200
     assert result["Cache-Control"] == "no-store"
     assert "access_digest" not in result.data
-    assert result.data["delivery_status"] == "not_implemented"
+    assert result.data["delivery_status"] == "not_queued"
 
 
 @pytest.mark.django_db(transaction=True)

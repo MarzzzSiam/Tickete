@@ -2,6 +2,7 @@ import secrets
 import uuid
 
 from django.db import models
+from django.utils import timezone
 
 
 def ticket_code():
@@ -32,3 +33,16 @@ class Ticket(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["order", "position"], name="one_ticket_per_position")
         ]
+
+
+class TicketDelivery(models.Model):
+    """Durable local-worker queue; a row lock prevents concurrent processing."""
+
+    order = models.OneToOneField("orders.Order", on_delete=models.PROTECT, primary_key=True)
+    pdf_key = models.CharField(max_length=300, blank=True)
+    recipient_sent = models.BooleanField(default=False)
+    receipt_sent = models.BooleanField(default=False)
+    attempts = models.PositiveIntegerField(default=0)
+    next_attempt_at = models.DateTimeField(default=timezone.now)
+    completed_at = models.DateTimeField(null=True, blank=True)
+    last_error = models.CharField(max_length=40, blank=True)

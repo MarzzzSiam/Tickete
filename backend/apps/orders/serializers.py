@@ -55,3 +55,4 @@ class CheckoutResult(serializers.Serializer):
     payment = serializers.JSONField(allow_null=True)
     tickets = serializers.JSONField()
     delivery_status = serializers.CharField()
+    pdf_ready = serializers.BooleanField()
