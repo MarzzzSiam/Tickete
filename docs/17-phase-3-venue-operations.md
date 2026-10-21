@@ -34,8 +34,18 @@ All paths below have `/api/v1/` prefix. Authenticated writes require CSRF; acces
 - `POST events/{id}/scan/` — `{value, method: "qr" | "manual"}`.
 - `POST events/{id}/tickets/{ticket_id}/cancel/` — owner cancellation.
 
-New team and scan-log tables have migrations enabling RLS and revoking Supabase browser-role privileges. Check-in timestamps reference the admitting user. Integration tests and remote migration status will be recorded after verification; do not treat this entry as deployment acceptance.
+New team and scan-log tables have migrations enabling RLS and revoking Supabase browser-role privileges. Check-in timestamps reference the admitting user. Supabase migrations were applied on 2026-10-21: zero pending, all three new tables have RLS enabled, and neither `anon` nor `authenticated` has SELECT access. [Final CI run 39603995434](https://github.com/MarzzzSiam/TICKETE/actions/runs/39603995434) passed 116 backend tests and 24 browser tests, including simultaneous admission, all role boundaries, revoked/expired invitations, cancellation, desktop/mobile manual entry and camera-permission denial. Desktop/mobile screenshots were reviewed and input borders/section spacing improved. Production build, lint, formatting, types and OpenAPI validation passed. The tested implementation is commit `d604387`; only documentation changed afterward.
 
 ## Still pending
 
 Ticket recovery/resend and scheduled hold cleanup; full reporting charts and final event-close report; hosted acceptance, physical phone-camera verification, and real volunteer invitation mailbox acceptance. No invitation emails are sent to real recipients during automated checks.
+
+## Local acceptance steps
+
+1. Restart Django and Next.js after updating; restart `python manage.py process_ticket_jobs` in the backend virtual environment and keep it running for ticket and invitation emails.
+2. As the verified owner, open **Organizer events**, open an event, then **Purchases, team and check-in**. Search a buyer email and compare paid ticket counts.
+3. Invite a second email with **Scanner** access. The recipient opens the emailed link and accepts while signed into the matching verified account.
+4. As that scanner, open **My event teams**, choose the event and enter a test ticket ID. The first attempt shows **Entry approved**; a repeated attempt shows **Already checked in** with its original admission time.
+5. On a phone using HTTPS, grant camera permission and scan a test ticket QR. Camera verification on physical hardware and real volunteer mailbox acceptance remain manual checks. Use test tickets: admission is irreversible through the app.
+
+No paid worker was added. The local processor must stay running to deliver queued invitations; the web server handles check-in directly.
