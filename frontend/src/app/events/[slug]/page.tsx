@@ -43,6 +43,7 @@ export default async function Page({ params }: Props) {
       {event.has_banner && (
         <Image
           className="event-banner"
+          style={{ width: "100%", height: "auto" }}
           src={`${browserApi}/public/events/${slug}/banner/`}
           alt={`${event.title} event banner`}
           width={1200}

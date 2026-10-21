@@ -11,6 +11,12 @@ import {
 } from "@/lib/auth-api";
 import { dhakaTime, type EventRecord } from "@/lib/events";
 import { Button, Pill, Stepper } from "@/components/ui";
+import {
+  checkoutEpoch,
+  checkoutSessionEvent,
+  checkoutSessionKey,
+  clearCheckoutAccess,
+} from "@/lib/checkout-session";
 
 type Order = {
   id: string;
@@ -37,18 +43,20 @@ type Order = {
   }[];
 };
 type Saved = {
+  owner: string;
+  epoch: string;
   token: string;
   key: string;
   orderId?: string;
   payload?: unknown;
 };
-function capability(): Saved {
+function capability(owner: string): Saved {
   const bytes = crypto.getRandomValues(new Uint8Array(32));
   const token = btoa(String.fromCharCode(...bytes))
     .replaceAll("+", "-")
     .replaceAll("/", "_")
     .replaceAll("=", "");
-  return { token, key: crypto.randomUUID() };
+  return { token, key: crypto.randomUUID(), owner, epoch: checkoutEpoch() };
 }
 
 export function Checkout({ event }: { event: EventRecord }) {
@@ -69,6 +77,7 @@ export function Checkout({ event }: { event: EventRecord }) {
   const [remaining, setRemaining] = useState(0);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [identityReady, setIdentityReady] = useState(false);
   const [error, setError] = useState("");
   const categories = event.categories.filter(
     (c) => c.is_active && Number(c.price) > 0 && c.id,
@@ -83,11 +92,49 @@ export function Checkout({ event }: { event: EventRecord }) {
 
   useEffect(() => {
     let active = true;
+    const initialEpoch = checkoutEpoch();
+    const reset = () => {
+      clearCheckoutAccess();
+      window.location.reload();
+    };
+    const storageChanged = (e: StorageEvent) => {
+      if (e.key === checkoutSessionKey || e.key === null) reset();
+    };
+    const checkSession = () => {
+      if (checkoutEpoch() !== initialEpoch) reset();
+    };
+    window.addEventListener(checkoutSessionEvent, reset);
+    window.addEventListener("storage", storageChanged);
+    window.addEventListener("focus", checkSession);
     async function load() {
       try {
+        let identity: Profile | null = null;
+        try {
+          identity = await accountRequest<Profile>(
+            "me",
+            "GET",
+            undefined,
+            true,
+          );
+        } catch (e) {
+          // A service/network failure is not proof that this is a guest session.
+          if (!(e instanceof AccountError) || e.status !== 401) throw e;
+        }
+        if (!active || checkoutEpoch() !== initialEpoch) return;
+        setProfile(identity);
+        setEmail(identity?.email || "");
+        setIdentityReady(true);
         const raw = sessionStorage.getItem(storageKey);
         if (raw) {
           const previous = JSON.parse(raw) as Saved;
+          // Legacy entries have no owner and must never be restored for another user.
+          if (
+            previous.owner !== (identity?.id || "guest") ||
+            previous.epoch !== initialEpoch
+          ) {
+            sessionStorage.removeItem(storageKey);
+            return;
+          }
           if (active) setSaved(previous);
           if (previous.orderId) {
             const current = await apiRequest<Order>(
@@ -118,16 +165,11 @@ export function Checkout({ event }: { event: EventRecord }) {
       }
     }
     void load();
-    void accountRequest<Profile>("me", "GET", undefined, true)
-      .then((p) => {
-        if (active) {
-          setProfile(p);
-          setEmail(p.email);
-        }
-      })
-      .catch(() => {});
     return () => {
       active = false;
+      window.removeEventListener(checkoutSessionEvent, reset);
+      window.removeEventListener("storage", storageChanged);
+      window.removeEventListener("focus", checkSession);
     };
   }, [storageKey]);
 
@@ -163,7 +205,7 @@ export function Checkout({ event }: { event: EventRecord }) {
     }
   }
   async function reserve() {
-    const access = saved || capability();
+    const access = saved || capability(profile?.id || "guest");
     const payload = access.payload || {
       event_id: event.id,
       buyer_email: email,
@@ -200,6 +242,8 @@ export function Checkout({ event }: { event: EventRecord }) {
       throw e;
     }
     const confirmed = {
+      owner: access.owner,
+      epoch: access.epoch,
       token: access.token,
       key: access.key,
       orderId: current.id,
@@ -256,6 +300,10 @@ export function Checkout({ event }: { event: EventRecord }) {
       )}
       {loading ? (
         <p role="status">Restoring checkout…</p>
+      ) : !identityReady ? (
+        <Button onClick={() => window.location.reload()}>
+          Retry loading checkout
+        </Button>
       ) : (
         <div className="checkout-grid">
           <section className="card auth-card">
