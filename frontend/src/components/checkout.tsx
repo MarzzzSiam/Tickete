@@ -527,8 +527,8 @@ export function Checkout({ event }: { event: EventRecord }) {
                     ))}
                     <p>
                       We’ll hold these tickets for up to 10 minutes, or until
-                      sales close. Your email’s paid and reserved tickets
-                      count toward the event limit.
+                      sales close. Your email’s paid and reserved tickets count
+                      toward the event limit.
                     </p>
                     <Button type="submit" loading={busy}>
                       Reserve tickets
