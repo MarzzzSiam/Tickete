@@ -329,10 +329,10 @@ export function Checkout({ event }: { event: EventRecord }) {
 
   return (
     <main id="main" className="container account-page checkout-page">
-      <Pill>TEST CHECKOUT Â· NO REAL CHARGE</Pill>
+      <Pill>TEST CHECKOUT · NO REAL CHARGE</Pill>
       <h1>Your next great memory.</h1>
       <p>
-        {event.title} Â· {dhakaTime(event.starts_at)} Â· Asia/Dhaka
+        {event.title} · {dhakaTime(event.starts_at)} · Asia/Dhaka
       </p>
       <ol className="checkout-steps" aria-label="Checkout progress">
         {["Tickets", "Details", "Payment", "Done"].map((label, i) => (
@@ -348,7 +348,7 @@ export function Checkout({ event }: { event: EventRecord }) {
         </p>
       )}
       {loading ? (
-        <p role="status">Restoring checkoutâ€¦</p>
+        <p role="status">Restoring checkout…</p>
       ) : !identityReady ? (
         <Button onClick={() => window.location.reload()}>
           Retry loading checkout
@@ -397,7 +397,7 @@ export function Checkout({ event }: { event: EventRecord }) {
             )}
             {step === 1 && (
               <>
-                <h2>Whoâ€™s coming?</h2>
+                <h2>Who’s coming?</h2>
                 {saved?.payload ? (
                   <>
                     <p>
@@ -461,7 +461,7 @@ export function Checkout({ event }: { event: EventRecord }) {
                           { length: quantities[c.id!] || 0 },
                           (_, i) => (
                             <label key={`${c.id}-${i}`}>
-                              {c.name} Â· attendee {i + 1} (optional)
+                              {c.name} · attendee {i + 1} (optional)
                               <input
                                 maxLength={150}
                                 value={names[`${c.id}-${i}`] || ""}
@@ -526,8 +526,8 @@ export function Checkout({ event }: { event: EventRecord }) {
                       </label>
                     ))}
                     <p>
-                      Weâ€™ll hold these tickets for up to 10 minutes, or until
-                      sales close. Your emailâ€™s paid and reserved tickets
+                      We’ll hold these tickets for up to 10 minutes, or until
+                      sales close. Your email’s paid and reserved tickets
                       count toward the event limit.
                     </p>
                     <Button type="submit" loading={busy}>
@@ -668,7 +668,7 @@ export function Checkout({ event }: { event: EventRecord }) {
             {step === 3 && order && (
               <>
                 <Pill>TEST PAYMENT CONFIRMED</Pill>
-                <h2>Youâ€™re on the list.</h2>
+                <h2>You’re on the list.</h2>
                 <p>
                   {order.quantity} ticket(s) issued for {order.recipient_email}
                   {order.is_gift ? " as a gift" : ""}.
@@ -676,7 +676,7 @@ export function Checkout({ event }: { event: EventRecord }) {
                 {order.tickets.map((t) => (
                   <article className="checkout-issued" key={t.id}>
                     <span>
-                      ADMIT ONE Â· {t.position} OF {order.quantity}
+                      ADMIT ONE · {t.position} OF {order.quantity}
                     </span>
                     <h3>{event.title}</h3>
                     <p>{t.attendee_name || "General admission"}</p>

@@ -40,15 +40,15 @@ export function EventPreview({ event }: { event: EventRecord }) {
       )}
       <Pill>EVENT PREVIEW</Pill>
       <h2>{event.title}</h2>
-      <p>{dhakaTime(event.starts_at)} Â· Asia/Dhaka</p>
+      <p>{dhakaTime(event.starts_at)} · Asia/Dhaka</p>
       <p>{event.venue || "Venue to be added"}</p>
       <p className="event-description">{event.description}</p>
       <h3>Ticket categories</h3>
       {event.categories.map((category, index) => (
         <p key={category.id || index}>
-          {category.name} Â· BDT {category.price} Â·{" "}
+          {category.name} · BDT {category.price} ·{" "}
           {category.seat_limit ?? "Unlimited"} seats
-          {!category.is_active && " Â· Inactive"}
+          {!category.is_active && " · Inactive"}
         </p>
       ))}
       <p>
@@ -60,8 +60,8 @@ export function EventPreview({ event }: { event: EventRecord }) {
           <h3>Checkout questions</h3>
           {event.form_fields.map((field, index) => (
             <p key={field.id || index}>
-              {field.label} Â· {field.type}
-              {field.required && " Â· Required"}
+              {field.label} · {field.type}
+              {field.required && " · Required"}
               {field.options.length > 0 && ` (${field.options.join(", ")})`}
             </p>
           ))}
@@ -218,7 +218,7 @@ function EventEditor({
         true,
       );
       onSave(result);
-      setNotice("Draft saved. Submit it when youâ€™re ready for admin review.");
+      setNotice("Draft saved. Submit it when you’re ready for admin review.");
       if (upload) {
         const body = new FormData();
         body.append("banner", upload);
@@ -595,7 +595,7 @@ function EventEditor({
         </p>
         {values.categories.map((category, index) => (
           <p key={index}>
-            {category.name || "Ticket category"} Â· BDT{" "}
+            {category.name || "Ticket category"} · BDT{" "}
             {category.price || "0.00"}
           </p>
         ))}
@@ -702,7 +702,7 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
         </p>
       )}
       {loading ? (
-        <p role="status">Loadingâ€¦</p>
+        <p role="status">Loading…</p>
       ) : !profile ? (
         <ButtonLink href="/login">Log in</ButtonLink>
       ) : profile.role !== "organizer" && !event ? (
@@ -787,7 +787,7 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
                         className="button button-secondary"
                         href={`/organizer/events/${item.id}`}
                       >
-                        Open event â†’
+                        Open event →
                       </Link>
                     </article>
                   ))}
