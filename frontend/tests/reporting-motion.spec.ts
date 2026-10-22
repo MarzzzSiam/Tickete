@@ -47,6 +47,20 @@ test("decorative motion can pause and respects reduced motion", async ({
         document.documentElement.clientWidth,
     ),
   ).toBe(true);
+  await page.goto("/login");
+  await expect(page.locator(".ambient-particles")).toBeVisible();
+  await expect(page.locator(".ambient-particles i").first()).toHaveCSS(
+    "animation-name",
+    "none",
+  );
+  await page.getByLabel("Email address").fill("motion-check@example.com");
+  await expect(page.getByLabel("Email address")).toHaveValue(
+    "motion-check@example.com",
+  );
+  await page.screenshot({
+    path: `../docs/screenshots/motion-login-${info.project.name}.png`,
+    fullPage: true,
+  });
 });
 
 test("owner views charts and closes a dedicated event with a fixed report", async ({

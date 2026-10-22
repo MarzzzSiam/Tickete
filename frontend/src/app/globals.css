@@ -2208,7 +2208,7 @@ select:focus-visible {
   color: var(--danger-text);
   background: var(--danger-bg);
 }
-/* Quiet decorative motion stays outside operational screens. */
+/* Shared decoration stays behind content and never intercepts controls. */
 body {
   isolation: isolate;
 }
@@ -2221,18 +2221,35 @@ body {
 }
 .ambient-particles i {
   position: absolute;
-  width: 5px;
-  height: 5px;
-  background: var(--brand-500);
-  opacity: 0.15;
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(
+    circle at 28% 25%,
+    #fff 0%,
+    #dcd9ff 24%,
+    #8d84f5 58%,
+    #4f46b8 100%
+  );
+  box-shadow:
+    inset -1px -2px 3px #39308a33,
+    2px 3px 6px #5145cd12;
+  opacity: 0.26;
   border-radius: 50%;
   animation: particle-drift 28s ease-in-out infinite alternate;
 }
 .ambient-particles i:nth-child(3n) {
-  width: 9px;
-  height: 9px;
-  background: transparent;
-  border: 1px solid var(--brand-500);
+  width: 17px;
+  height: 17px;
+  opacity: 0.2;
+}
+.ambient-particles i:nth-child(3n + 1) {
+  width: 5px;
+  height: 5px;
+  opacity: 0.16;
+  filter: blur(0.4px);
+}
+.ambient-particles i:nth-child(even) {
+  animation-direction: alternate-reverse;
 }
 .hero-ticket {
   animation: ticket-float 7s ease-in-out infinite;

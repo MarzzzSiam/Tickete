@@ -1,19 +1,15 @@
 "use client";
 import { useEffect, useState } from "react";
-import { usePathname } from "next/navigation";
 
 export function AmbientMotion() {
-  const path = usePathname();
   const [paused, setPaused] = useState(false);
   useEffect(() => {
     document.documentElement.dataset.motion = paused ? "paused" : "running";
   }, [paused]);
-  const publicPage = path === "/" || path === "/events";
-  if (!publicPage) return null;
   return (
     <>
       <div className="ambient-particles" aria-hidden="true">
-        {Array.from({ length: 16 }, (_, i) => (
+        {Array.from({ length: 36 }, (_, i) => (
           <i
             key={i}
             style={{
