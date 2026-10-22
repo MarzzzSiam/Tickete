@@ -1,5 +1,7 @@
 # Changelog
 
+2026-10-22 — Replaced standalone blue action links in account/organizer/admin/team/report screens with white-filled bordered secondary buttons; grouped navigation uses 12px spacing and mobile stacking. Authentication page links remain unchanged.
+
 2026-10-22 — Refined background particles to reference-inspired glowing pinpoints with blue-violet halos, replacing spherical shading and slowing the drift across all pages.
 
 2026-10-22 — Expanded particles from 16 to 36 across all pages, with shaded spherical highlights, soft shadows and depth variation. Retained pointer transparency, pause controls and reduced-motion support.

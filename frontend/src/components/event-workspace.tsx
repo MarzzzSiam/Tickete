@@ -614,16 +614,14 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
       <h1>
         {eventId ? event?.title || "Make something happen." : "Your events."}
       </h1>
-      <p>
-        <Link className="auth-link" href="/organizer/events">
+      <p className="auth-actions">
+        <Link className="button button-secondary" href="/organizer/events">
           All events
-        </Link>{" "}
-        ·{" "}
-        <Link className="auth-link" href="/notifications">
+        </Link>
+        <Link className="button button-secondary" href="/notifications">
           Notifications
-        </Link>{" "}
-        ·{" "}
-        <Link className="auth-link" href="/account">
+        </Link>
+        <Link className="button button-secondary" href="/account">
           Account
         </Link>
       </p>
@@ -708,7 +706,7 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
                       <h2>{item.title}</h2>
                       <p>{dhakaTime(item.starts_at)}</p>
                       <Link
-                        className="auth-link"
+                        className="button button-secondary"
                         href={`/organizer/events/${item.id}`}
                       >
                         Open event →

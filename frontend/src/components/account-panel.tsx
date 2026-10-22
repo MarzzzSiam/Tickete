@@ -308,10 +308,10 @@ export function AccountPanel() {
                 {user.role === "admin" && (
                   <ButtonLink href="/admin/events">Review events</ButtonLink>
                 )}
-                <Link className="auth-link" href="/notifications">
+                <Link className="button button-secondary" href="/notifications">
                   Notifications
                 </Link>
-                <Link className="auth-link" href="/events">
+                <Link className="button button-secondary" href="/events">
                   Explore events →
                 </Link>
               </div>

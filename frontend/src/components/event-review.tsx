@@ -66,12 +66,11 @@ export function EventReview() {
     <main id="main" className="container account-page">
       <Pill>ADMIN REVIEW</Pill>
       <h1>Give good events the go-ahead.</h1>
-      <p>
-        <Link className="auth-link" href="/notifications">
+      <p className="auth-actions">
+        <Link className="button button-secondary" href="/notifications">
           Notifications
-        </Link>{" "}
-        ·{" "}
-        <Link className="auth-link" href="/account">
+        </Link>
+        <Link className="button button-secondary" href="/account">
           Account
         </Link>
       </p>

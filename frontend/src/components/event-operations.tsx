@@ -247,9 +247,13 @@ export function EventOperations({ eventId }: { eventId: string }) {
     <main id="main" className="container account-page operations-page">
       <Pill>EVENT OPERATIONS</Pill>
       <h1>{summary?.title || "Your event workspace"}</h1>
-      <p>
-        <Link href="/team">My event teams</Link> ·{" "}
-        <Link href="/organizer/events">Organizer events</Link>
+      <p className="auth-actions">
+        <Link className="button button-secondary" href="/team">
+          My event teams
+        </Link>
+        <Link className="button button-secondary" href="/organizer/events">
+          Organizer events
+        </Link>
       </p>
       {error && (
         <p className="auth-error" role="alert">
@@ -281,7 +285,7 @@ export function EventOperations({ eventId }: { eventId: string }) {
           {summary.role !== "scanner" && (
             <p>
               <Link
-                className="text-link"
+                className="button button-secondary"
                 href={`/organizer/events/${eventId}/report`}
               >
                 Dashboard and final report →
@@ -681,14 +685,22 @@ export function TeamEvents() {
         <article key={e.id} className="card auth-card">
           <h2>{e.title}</h2>
           <p>{e.role}</p>
-          <Link href={`/organizer/events/${e.id}/operations`}>
-            Open event operations →
-          </Link>
-          {e.role === "manager" && (
-            <p>
-              <Link href={`/organizer/events/${e.id}`}>Edit event draft</Link>
-            </p>
-          )}
+          <div className="auth-actions">
+            <Link
+              className="button button-secondary"
+              href={`/organizer/events/${e.id}/operations`}
+            >
+              Open event operations →
+            </Link>
+            {e.role === "manager" && (
+              <Link
+                className="button button-secondary"
+                href={`/organizer/events/${e.id}`}
+              >
+                Edit event draft
+              </Link>
+            )}
+          </div>
         </article>
       ))}
       {!error && !events.length && (

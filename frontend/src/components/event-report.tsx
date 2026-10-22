@@ -125,7 +125,10 @@ export function EventReport({ eventId }: { eventId: string }) {
       <Pill>EVENT REPORTING</Pill>
       <h1>{report?.title || "Your event report"}</h1>
       <p>
-        <Link href={`/organizer/events/${eventId}/operations`}>
+        <Link
+          className="button button-secondary"
+          href={`/organizer/events/${eventId}/operations`}
+        >
           Back to event operations
         </Link>
       </p>
