@@ -4,6 +4,8 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-22 — Action-link polish: account, organizer, admin review, event-team and report navigation actions now use white-filled secondary buttons. Grouped actions retain a 12px gap and mobile stacking. Login/registration links and inline explanatory links are unchanged.
+
 2026-10-22 — Particle style refinement: replaced shaded spheres with tiny blue-violet light points and diffuse halos matching the owner's reference. All-page coverage remains; drift now takes 36–60 seconds per direction, with pause and reduced-motion support retained.
 
 2026-10-22 — Visual follow-up: expanded the shared background to 36 softly shaded particles with three depth sizes across every page, including account, checkout and organizer screens. Pause and reduced-motion support remain available. Core MVP features are implemented; production launch acceptance remains outstanding, and payments are still simulated.
