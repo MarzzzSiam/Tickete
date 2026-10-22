@@ -103,3 +103,22 @@ class EventFormField(models.Model):
 
     class Meta:
         ordering = ["sort_order", "id"]
+
+
+class Coupon(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    event = models.ForeignKey(Event, on_delete=models.CASCADE, related_name="coupons")
+    code = models.CharField(max_length=32)
+    percentage = models.PositiveSmallIntegerField()
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=["event", "code"], name="unique_event_coupon"),
+            models.CheckConstraint(
+                condition=models.Q(percentage__gte=1, percentage__lte=99),
+                name="coupon_percentage_range",
+            ),
+        ]
+        ordering = ["created_at", "id"]

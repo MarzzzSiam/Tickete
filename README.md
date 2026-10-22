@@ -4,6 +4,10 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-23 — Coupon verification complete: [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/39813813045) passed 151 backend tests and 32 desktop/mobile browser tests, production build, lint, formatting, types and API schema validation. Supabase coupon migration is applied with none pending; RLS and denied browser-role reads were verified. Coupon owner/checkout screenshots reviewed. See [coupon usage](docs/20-event-coupons.md). Production launch acceptance and real payment integration remain outside this feature increment.
+
+2026-10-22 — Event coupons implemented for verification: optional creation fields, owner-only add/pause/resume controls, up to three codes per event and backend-calculated percentage discounts at checkout. Pausing expires unpaid coupon reservations while preserving paid tickets. Isolated CI and the additive migration are pending; see [event coupons](docs/20-event-coupons.md).
+
 2026-10-22 — Action-link polish: account, organizer, admin review, event-team and report navigation actions now use white-filled secondary buttons. Grouped actions retain a 12px gap and mobile stacking. Login/registration links and inline explanatory links are unchanged.
 
 2026-10-22 — Particle style refinement: replaced shaded spheres with tiny blue-violet light points and diffuse halos matching the owner's reference. All-page coverage remains; drift now takes 36–60 seconds per direction, with pause and reduced-motion support retained.

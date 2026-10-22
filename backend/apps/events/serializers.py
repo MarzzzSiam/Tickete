@@ -2,6 +2,7 @@ from rest_framework import serializers
 
 from apps.accounts.serializers import StrictSerializer
 
+from .coupons import CouponInput
 from .models import Event, EventFormField, TicketCategory
 
 
@@ -50,6 +51,7 @@ class FieldInput(StrictSerializer):
 
 
 class DraftInput(StrictSerializer):
+    coupons = CouponInput(many=True, required=False, max_length=3)
     title = serializers.CharField(max_length=180)
     description = serializers.CharField(max_length=20000, allow_blank=True, required=False)
     venue = serializers.CharField(max_length=300, allow_blank=True, required=False)
@@ -105,8 +107,11 @@ class PublicEventSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(PublicEventSerializer):
+    owner_id = serializers.UUIDField(read_only=True)
+
     class Meta(PublicEventSerializer.Meta):
         fields = PublicEventSerializer.Meta.fields + [
+            "owner_id",
             "status",
             "rejection_reason",
             "reviewed_at",

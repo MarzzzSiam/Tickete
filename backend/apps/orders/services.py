@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.exceptions import APIException, NotFound, ValidationError
 
+from apps.events.coupons import discounted_total
 from apps.events.models import Event, TicketCategory
 from apps.payments.gateway import gateway
 from apps.payments.models import Payment
@@ -163,7 +164,10 @@ def _create_order(data, user):
             }
         )
         total += category.price * selection["quantity"]
+    pricing = discounted_total(event, total, data.get("coupon_code", ""))
+    total = Decimal(pricing["total"])
     snapshot = {
+        **pricing,
         "banner_key": event.banner_key,
         "organizer_contact": event.owner.email,
         "title": event.title,
@@ -366,3 +370,22 @@ def cleanup_expired_holds(limit=100):
                 expire_if_needed(event, order)
                 count += 1
     return count
+
+
+@transaction.atomic
+def quote_coupon(data):
+    event = get_object_or_404(
+        Event.objects.select_for_update(), pk=data["event_id"], status="approved"
+    )
+    if not sales_open(event, timezone.now()):
+        raise CheckoutConflict("Ticket sales are not open for this event.")
+    if sum(item["quantity"] for item in data["selections"]) > event.max_per_order:
+        raise ValidationError("The ticket limit per order would be exceeded.")
+    categories = {c.id: c for c in event.categories.filter(is_active=True, price__gt=0)}
+    subtotal = Decimal("0.00")
+    for item in data["selections"]:
+        category = categories.get(item["category_id"])
+        if not category:
+            raise ValidationError("Choose active paid categories from this event.")
+        subtotal += category.price * item["quantity"]
+    return discounted_total(event, subtotal, data["coupon_code"])

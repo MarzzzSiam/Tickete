@@ -10,7 +10,14 @@ from apps.core.storage import get_storage
 from apps.tickets.models import TicketDelivery
 
 from . import services
-from .serializers import CheckoutInput, CheckoutResult, PaymentInput, VerifyInput
+from .serializers import (
+    CheckoutInput,
+    CheckoutResult,
+    PaymentInput,
+    QuoteInput,
+    QuoteOutput,
+    VerifyInput,
+)
 
 
 class CheckoutThrottle(AuthIPThrottle):
@@ -92,3 +99,9 @@ class DownloadTickets(CheckoutView):
         response["Content-Disposition"] = f'attachment; filename="{order.number}.pdf"'
         response["X-Content-Type-Options"] = "nosniff"
         return response
+
+
+class CouponQuote(CheckoutView):
+    @extend_schema(request=QuoteInput, responses=QuoteOutput)
+    def post(self, request):
+        return Response(QuoteOutput(services.quote_coupon(validated(QuoteInput, request))).data)

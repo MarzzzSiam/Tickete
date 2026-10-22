@@ -2396,3 +2396,26 @@ html[data-motion="paused"] .marquee-track {
     grid-template-columns: 1fr;
   }
 }
+
+.coupon-panel {
+  margin-block: 24px;
+}
+.coupon-fields {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+.coupon-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-bottom: 1px solid var(--line);
+  padding-block: 12px;
+}
+@media (max-width: 600px) {
+  .coupon-fields {
+    grid-template-columns: 1fr;
+  }
+}

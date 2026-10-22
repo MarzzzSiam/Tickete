@@ -13,6 +13,7 @@ import {
 } from "@/lib/auth-api";
 import { dhakaTime, type EventRecord, type EventPage } from "@/lib/events";
 import { Badge, Button, ButtonLink, Pill } from "./ui";
+import { CouponFields, EventCoupons, type CouponDraft } from "./event-coupons";
 
 function message(error: unknown): string {
   if (!(error instanceof AccountError))
@@ -113,6 +114,10 @@ function EventEditor({
   onDirty: (dirty: boolean) => void;
 }) {
   const [step, setStep] = useState(0);
+  const [couponsEnabled, setCouponsEnabled] = useState(false);
+  const [coupons, setCoupons] = useState<CouponDraft[]>([
+    { code: "", percentage: "" },
+  ]);
   const [problem, setProblem] = useState("");
   const [notice, setNotice] = useState("");
   const [upload, setUpload] = useState<File | null>(null);
@@ -154,7 +159,7 @@ function EventEditor({
     name: "form_fields",
   });
   const values = useWatch({ control: form.control }) as EditorData;
-  const dirty = form.formState.isDirty;
+  const dirty = form.formState.isDirty || (!event && couponsEnabled);
   useEffect(() => {
     onDirty(dirty);
     return () => onDirty(false);
@@ -171,6 +176,14 @@ function EventEditor({
     return {
       ...data,
       ...dates,
+      ...(!event && couponsEnabled
+        ? {
+            coupons: coupons.map((c) => ({
+              code: c.code.trim(),
+              percentage: Number(c.percentage),
+            })),
+          }
+        : {}),
       categories: data.categories.map((c) => ({
         ...(c.recordId ? { id: c.recordId } : {}),
         name: c.name,
@@ -391,6 +404,64 @@ function EventEditor({
           >
             Add ticket category
           </Button>
+          {!event && (
+            <fieldset className="event-fieldset">
+              <legend>Optional coupons</legend>
+              <label className="event-checkbox">
+                <input
+                  type="checkbox"
+                  checked={couponsEnabled}
+                  onChange={(e) => setCouponsEnabled(e.target.checked)}
+                />
+                Enable event coupons
+              </label>
+              {couponsEnabled && (
+                <>
+                  <p>
+                    Up to three codes, 1–99% off. You can pause or add codes
+                    after saving.
+                  </p>
+                  {coupons.map((coupon, index) => (
+                    <div className="auth-form" key={index}>
+                      <CouponFields
+                        prefix={`draft-coupon-${index}`}
+                        value={coupon}
+                        onChange={(value) =>
+                          setCoupons((rows) =>
+                            rows.map((row, i) => (i === index ? value : row)),
+                          )
+                        }
+                      />
+                      <Button
+                        type="button"
+                        variant="secondary"
+                        onClick={() =>
+                          setCoupons((rows) =>
+                            rows.filter((_, i) => i !== index),
+                          )
+                        }
+                      >
+                        Remove coupon {index + 1}
+                      </Button>
+                    </div>
+                  ))}
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    disabled={coupons.length >= 3}
+                    onClick={() =>
+                      setCoupons((rows) => [
+                        ...rows,
+                        { code: "", percentage: "" },
+                      ])
+                    }
+                  >
+                    Add another coupon
+                  </Button>
+                </>
+              )}
+            </fieldset>
+          )}
         </div>
         <div hidden={step !== 2} className="auth-form">
           <p className="muted">
@@ -678,6 +749,13 @@ export function EventWorkspace({ eventId }: { eventId?: string }) {
                 </ButtonLink>
               )}
             </div>
+          )}
+          {event && event.owner_id === profile.id && (
+            <EventCoupons
+              key={event.id}
+              eventId={event.id}
+              closed={Boolean(event.closed_at)}
+            />
           )}
           {eventId === "new" ||
           (event && ["draft", "rejected"].includes(event.status)) ? (

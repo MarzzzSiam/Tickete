@@ -1,5 +1,9 @@
 # Changelog
 
+2026-10-23 — Coupon feature verified: 151 backend and 32 browser tests passed; Supabase migration applied, none pending, coupon-table privacy verified. See `20-event-coupons.md`.
+
+2026-10-22 — Added optional event coupons, owner-only management, server-calculated order discounts and atomic pause behavior. Verification and migration status: `20-event-coupons.md`.
+
 2026-10-22 — Replaced standalone blue action links in account/organizer/admin/team/report screens with white-filled bordered secondary buttons; grouped navigation uses 12px spacing and mobile stacking. Authentication page links remain unchanged.
 
 2026-10-22 — Refined background particles to reference-inspired glowing pinpoints with blue-violet halos, replacing spherical shading and slowing the drift across all pages.
