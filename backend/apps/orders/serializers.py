@@ -15,6 +15,7 @@ class SelectionInput(StrictSerializer):
 
 
 class CheckoutInput(StrictSerializer):
+    coupon_code = serializers.RegexField(r"^[A-Za-z0-9_-]{0,32}$", allow_blank=True, required=False)
     event_id = serializers.UUIDField()
     buyer_email = serializers.EmailField()
     is_gift = serializers.BooleanField(default=False)
@@ -56,3 +57,19 @@ class CheckoutResult(serializers.Serializer):
     tickets = serializers.JSONField()
     delivery_status = serializers.CharField()
     pdf_ready = serializers.BooleanField()
+
+
+class QuoteInput(StrictSerializer):
+    event_id = serializers.UUIDField()
+    selections = SelectionInput(many=True, allow_empty=False, max_length=50)
+    coupon_code = serializers.RegexField(r"^[A-Za-z0-9_-]{1,32}$")
+
+    def validate_selections(self, value):
+        return CheckoutInput().validate_selections(value)
+
+
+class QuoteOutput(serializers.Serializer):
+    subtotal = serializers.DecimalField(max_digits=14, decimal_places=2)
+    discount = serializers.DecimalField(max_digits=14, decimal_places=2)
+    total = serializers.DecimalField(max_digits=14, decimal_places=2)
+    coupon = serializers.JSONField(allow_null=True)

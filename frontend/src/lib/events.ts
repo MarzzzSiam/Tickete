@@ -15,6 +15,7 @@ export type CustomField = {
   sort_order: number;
 };
 export type EventRecord = {
+  owner_id?: string;
   id: string;
   title: string;
   slug: string | null;

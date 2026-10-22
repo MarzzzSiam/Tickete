@@ -1,9 +1,12 @@
 from django.urls import path
 
 from . import views
+from .coupons import CouponDetail, CouponList
 from .preview import EventPreview
 
 urlpatterns = [
+    path("events/<uuid:pk>/coupons/", CouponList.as_view()),
+    path("events/<uuid:pk>/coupons/<uuid:coupon_id>/", CouponDetail.as_view()),
     path("events/", views.EventList.as_view()),
     path("events/<uuid:pk>/", views.EventDetail.as_view()),
     path("events/<uuid:pk>/preview/", EventPreview.as_view()),

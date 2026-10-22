@@ -105,6 +105,9 @@ def save_draft(user, data, event_id=None):
     recheck_editor(user, event)
     editable(event)
     data = dict(data)
+    coupons = data.pop("coupons", [])
+    if coupons and event_id:
+        raise ValidationError("Use the coupon controls to add coupons to an existing event.")
     categories = data.pop("categories", None)
     fields = data.pop("form_fields", None)
     for key, value in data.items():
@@ -112,6 +115,10 @@ def save_draft(user, data, event_id=None):
     validate_schedule(event)
     event.status = Event.Status.DRAFT
     event.save()
+    from .coupons import add_coupon
+
+    for coupon in coupons:
+        add_coupon(user, event, coupon)
     if categories is not None:
         replace_children(event, "categories", TicketCategory, categories)
     if fields is not None:

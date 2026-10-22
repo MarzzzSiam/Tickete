@@ -2,6 +2,7 @@ from django.urls import path
 
 from .views import (
     CancelOrder,
+    CouponQuote,
     CreateOrder,
     DownloadTickets,
     OrderStatus,
@@ -10,6 +11,7 @@ from .views import (
 )
 
 urlpatterns = [
+    path("orders/coupon-quote/", CouponQuote.as_view()),
     path("orders/<uuid:pk>/tickets.pdf", DownloadTickets.as_view()),
     path("orders/", CreateOrder.as_view()),
     path("orders/<uuid:pk>/status/", OrderStatus.as_view()),

@@ -18,7 +18,14 @@ import {
   clearCheckoutAccess,
 } from "@/lib/checkout-session";
 
+type Pricing = {
+  subtotal: string;
+  discount: string;
+  total: string;
+  coupon: null | { code: string; percentage: number };
+};
 type Order = {
+  snapshot?: Partial<Pricing>;
   id: string;
   number: string;
   status: "pending" | "paid" | "failed" | "expired";
@@ -64,6 +71,10 @@ export function Checkout({ event }: { event: EventRecord }) {
   const [step, setStep] = useState(0);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [email, setEmail] = useState("");
+  const [couponCode, setCouponCode] = useState("");
+  const [quote, setQuote] = useState<
+    (Pricing & { selectionKey: string; input: string }) | null
+  >(null);
   const [profile, setProfile] = useState<Profile | null>(null);
   const [gift, setGift] = useState(false);
   const [recipient, setRecipient] = useState("");
@@ -89,6 +100,35 @@ export function Checkout({ event }: { event: EventRecord }) {
         sum + Math.round(Number(c.price) * 100) * (quantities[c.id!] || 0),
       0,
     ) / 100;
+
+  const selectionKey = JSON.stringify(
+    categories.map((c) => [c.id, quantities[c.id!] || 0]),
+  );
+  const appliedQuote =
+    quote &&
+    quote.selectionKey === selectionKey &&
+    quote.input === couponCode.trim().toUpperCase()
+      ? quote
+      : null;
+  const pricing = order?.snapshot || appliedQuote;
+
+  async function applyCoupon() {
+    setQuote(null);
+    const input = couponCode.trim().toUpperCase();
+    const result = await apiRequest<Pricing>(
+      "orders/coupon-quote",
+      "POST",
+      {
+        event_id: event.id,
+        coupon_code: input,
+        selections: categories
+          .filter((c) => quantities[c.id!] > 0)
+          .map((c) => ({ category_id: c.id, quantity: quantities[c.id!] })),
+      },
+      true,
+    );
+    setQuote({ ...result, selectionKey, input });
+  }
 
   useEffect(() => {
     let active = true;
@@ -205,10 +245,17 @@ export function Checkout({ event }: { event: EventRecord }) {
     }
   }
   async function reserve() {
+    if (!saved?.payload && couponCode.trim() && !appliedQuote) {
+      setError(
+        "Apply your coupon to check the discount, or clear the code before reserving.",
+      );
+      return;
+    }
     const access = saved || capability(profile?.id || "guest");
     const payload = access.payload || {
       event_id: event.id,
       buyer_email: email,
+      ...(appliedQuote ? { coupon_code: appliedQuote.coupon!.code } : {}),
       is_gift: gift,
       ...(gift ? { recipient_email: recipient } : {}),
       selections: categories
@@ -275,15 +322,17 @@ export function Checkout({ event }: { event: EventRecord }) {
     setOrder(null);
     setStep(0);
     setOtp("");
+    setCouponCode("");
+    setQuote(null);
     setError("");
   }
 
   return (
     <main id="main" className="container account-page checkout-page">
-      <Pill>TEST CHECKOUT · NO REAL CHARGE</Pill>
+      <Pill>TEST CHECKOUT Â· NO REAL CHARGE</Pill>
       <h1>Your next great memory.</h1>
       <p>
-        {event.title} · {dhakaTime(event.starts_at)} · Asia/Dhaka
+        {event.title} Â· {dhakaTime(event.starts_at)} Â· Asia/Dhaka
       </p>
       <ol className="checkout-steps" aria-label="Checkout progress">
         {["Tickets", "Details", "Payment", "Done"].map((label, i) => (
@@ -299,7 +348,7 @@ export function Checkout({ event }: { event: EventRecord }) {
         </p>
       )}
       {loading ? (
-        <p role="status">Restoring checkout…</p>
+        <p role="status">Restoring checkoutâ€¦</p>
       ) : !identityReady ? (
         <Button onClick={() => window.location.reload()}>
           Retry loading checkout
@@ -348,7 +397,7 @@ export function Checkout({ event }: { event: EventRecord }) {
             )}
             {step === 1 && (
               <>
-                <h2>Who’s coming?</h2>
+                <h2>Whoâ€™s coming?</h2>
                 {saved?.payload ? (
                   <>
                     <p>
@@ -412,7 +461,7 @@ export function Checkout({ event }: { event: EventRecord }) {
                           { length: quantities[c.id!] || 0 },
                           (_, i) => (
                             <label key={`${c.id}-${i}`}>
-                              {c.name} · attendee {i + 1} (optional)
+                              {c.name} Â· attendee {i + 1} (optional)
                               <input
                                 maxLength={150}
                                 value={names[`${c.id}-${i}`] || ""}
@@ -477,9 +526,9 @@ export function Checkout({ event }: { event: EventRecord }) {
                       </label>
                     ))}
                     <p>
-                      We’ll hold these tickets for up to 10 minutes, or until
-                      sales close. Your email’s paid and reserved tickets count
-                      toward the event limit.
+                      Weâ€™ll hold these tickets for up to 10 minutes, or until
+                      sales close. Your emailâ€™s paid and reserved tickets
+                      count toward the event limit.
                     </p>
                     <Button type="submit" loading={busy}>
                       Reserve tickets
@@ -619,7 +668,7 @@ export function Checkout({ event }: { event: EventRecord }) {
             {step === 3 && order && (
               <>
                 <Pill>TEST PAYMENT CONFIRMED</Pill>
-                <h2>You’re on the list.</h2>
+                <h2>Youâ€™re on the list.</h2>
                 <p>
                   {order.quantity} ticket(s) issued for {order.recipient_email}
                   {order.is_gift ? " as a gift" : ""}.
@@ -627,7 +676,7 @@ export function Checkout({ event }: { event: EventRecord }) {
                 {order.tickets.map((t) => (
                   <article className="checkout-issued" key={t.id}>
                     <span>
-                      ADMIT ONE · {t.position} OF {order.quantity}
+                      ADMIT ONE Â· {t.position} OF {order.quantity}
                     </span>
                     <h3>{event.title}</h3>
                     <p>{t.attendee_name || "General admission"}</p>
@@ -683,8 +732,63 @@ export function Checkout({ event }: { event: EventRecord }) {
             <p>{dhakaTime(event.starts_at)}</p>
             <hr />
             <p>{order?.quantity ?? totalQuantity} ticket(s)</p>
+            {!order && !saved?.payload && (
+              <div className="auth-form">
+                <label className="field">
+                  Any coupon code? (optional)
+                  <input
+                    className="field-input"
+                    value={couponCode}
+                    disabled={busy}
+                    maxLength={32}
+                    placeholder="Enter coupon code"
+                    onChange={(e) => {
+                      setCouponCode(e.target.value);
+                      setQuote(null);
+                    }}
+                  />
+                </label>
+                <div className="auth-actions">
+                  <Button
+                    variant="secondary"
+                    disabled={busy || !couponCode.trim() || totalQuantity === 0}
+                    onClick={() => void action(applyCoupon)}
+                  >
+                    Apply coupon
+                  </Button>
+                  {couponCode && (
+                    <Button
+                      variant="secondary"
+                      disabled={busy}
+                      onClick={() => {
+                        setCouponCode("");
+                        setQuote(null);
+                      }}
+                    >
+                      Remove coupon
+                    </Button>
+                  )}
+                </div>
+                {appliedQuote && (
+                  <p role="status" className="auth-notice">
+                    {appliedQuote.coupon?.code} applied:{" "}
+                    {appliedQuote.coupon?.percentage}% off. Rechecked when you
+                    reserve.
+                  </p>
+                )}
+              </div>
+            )}
+            {pricing?.coupon && (
+              <div aria-label="Price breakdown">
+                <p>Subtotal: BDT {pricing.subtotal}</p>
+                <p>
+                  {pricing.coupon.code} ({pricing.coupon.percentage}% off): −BDT{" "}
+                  {pricing.discount}
+                </p>
+              </div>
+            )}
             <strong className="checkout-total">
-              BDT {order?.total ?? total.toFixed(2)}
+              BDT {order?.total ?? appliedQuote?.total ?? total.toFixed(2)}
             </strong>
             <p>
               Maximum {event.max_per_order} per order and per buyer email across
