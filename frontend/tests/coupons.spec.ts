@@ -117,6 +117,8 @@ print(str(event.pk)+'|'+event.slug)
   await buyer
     .getByRole("button", { name: "Apply coupon", exact: true })
     .click();
-  await expect(buyer.getByRole("alert")).toContainText("invalid or paused");
+  await expect(
+    buyer.getByRole("alert").filter({ hasText: "invalid or paused" }),
+  ).toBeVisible();
   await guest.close();
 });
