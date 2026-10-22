@@ -14,6 +14,14 @@ The new coupon table has row-level security enabled and browser-role privileges 
 
 ## Verification
 
-Pending isolated PostgreSQL/Redis CI and browser acceptance. Backend tests cover normalization, bounds, authorization, event scoping, atomic draft creation, decimal rounding, replay, payment amounts, pause/resume and concurrent pause/payment and creation. Browser coverage exercises creation controls, owner coupon creation on an approved event, discounted purchase and paused-code rejection.
+2026-10-23 — [Final CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/39813813045) passed on commit `5013775`: 151 backend tests and 32 desktop/mobile browser tests, production build, lint, formatting, types and schema validation. Owner/checkout desktop and mobile screenshots were visually reviewed. The final browser assertion targets the coupon error specifically, excluding Next.js's hidden route announcer. Backend tests cover normalization, bounds, authorization, event scoping, atomic draft creation, decimal rounding, replay, payment amounts, pause/resume and concurrent pause/payment and creation. Browser coverage exercises creation controls, owner coupon creation on an approved event, discounted purchase and paused-code rejection.
 
-Apply migration `events.0003_coupon` only after isolated checks pass, then restart Django. No real event needs to be modified for verification.
+Migration `events.0003_coupon` was applied to Supabase after all 151 isolated backend tests passed. There are no pending migrations. RLS is enabled and both `anon` and `authenticated` roles lack SELECT privileges on the coupon table. No real coupons, purchases or event closures were created for verification.
+
+## Using coupons
+
+1. For a new event, open the Tickets step and tick **Enable event coupons**. Enter a code and percentage, optionally add a second/third code, then save the draft.
+2. For a saved event, open **Organizer studio → Open event → Event coupons**. Tick **Add an optional coupon**, enter both fields and select **Create coupon**. This also works after approval.
+3. Use **Pause CODE** or **Resume CODE** beside an existing coupon. Pausing asks for confirmation because unpaid discounted reservations will expire.
+4. Buyers select tickets, enter the code next to the price summary and select **Apply coupon**. They see subtotal, discount and total before reserving. Changing ticket quantities requires applying the code again.
+5. Restart Django if it is not using automatic reload, then refresh the browser. Existing local PDF/email processing continues unchanged.
