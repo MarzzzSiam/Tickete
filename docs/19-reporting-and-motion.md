@@ -12,6 +12,14 @@ Public home/event-list backgrounds have 16 low-opacity blue particles. The homep
 
 ## Acceptance and remaining launch work
 
+### 2026-10-22 — site-wide particle follow-up
+
+Later visual revision: the owner preferred the supplied glowing-light reference over spheres. The current design uses 2–4px light cores with diffuse blue-violet halos, no spherical shading, and 36–60 second drift durations. All-page coverage and motion accessibility remain. Both desktop/mobile browser checks and changed-file formatting passed; the mobile form screenshot was reviewed.
+
+At the owner's request, the shared root-layout particle layer now appears on every page, superseding the public-only scope above. There are 36 particles with three sizes, spherical gradient highlights, soft shadows and subtle distant blur. The layer stays behind content and cannot intercept clicks. Pause and reduced-motion support continue to apply globally. This visual change does not change launch readiness or introduce a paid dependency.
+
+Verification: local lint, TypeScript and changed-file formatting checks passed. Both desktop and mobile motion browser tests passed, including reduced motion and usable login inputs on a non-public page. Homepage and mobile login screenshots were visually reviewed. No database changes or backend test runs were needed for this visual follow-up.
+
 Supabase migration `events.0002_final_report` was applied on 2026-10-22 with none pending; it adds report storage without closing existing events. [Final CI run 39691667338](https://github.com/MarzzzSiam/TICKETE/actions/runs/39691667338) passed 134 backend tests and all 30 browser tests on commit `df7eedf`, plus production build, lint, formatting, type checks and schema validation. The initial mobile table keyboard-access failure was fixed by making scrollable table/chart regions keyboard-focusable. Desktop/mobile reporting and motion screenshots were visually reviewed. Reduced motion and pause controls passed browser checks. No real event was closed; real-device and hosted acceptance remain outstanding. Automated tests use disposable PostgreSQL/Redis and a dedicated fictional event for close/report browser checks. Do not test closing a real event unless it is finished: closure cannot be reversed through the app.
 
 Next after this increment: real phone-camera and invitation/recovery mailbox acceptance; performance/load checks with realistic event sizes; a database backup/restore drill; deployment configuration and end-to-end hosted acceptance. Free local development remains supported. Production launch is not claimed, and no paid resources are provisioned. CSV and PDF report export are V2 in the build brief.
