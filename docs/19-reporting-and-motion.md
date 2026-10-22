@@ -14,6 +14,8 @@ Public home/event-list backgrounds have 16 low-opacity blue particles. The homep
 
 ### 2026-10-22 — site-wide particle follow-up
 
+Later visual revision: the owner preferred the supplied glowing-light reference over spheres. The current design uses 2–4px light cores with diffuse blue-violet halos, no spherical shading, and 36–60 second drift durations. All-page coverage and motion accessibility remain. Both desktop/mobile browser checks and changed-file formatting passed; the mobile form screenshot was reviewed.
+
 At the owner's request, the shared root-layout particle layer now appears on every page, superseding the public-only scope above. There are 36 particles with three sizes, spherical gradient highlights, soft shadows and subtle distant blur. The layer stays behind content and cannot intercept clicks. Pause and reduced-motion support continue to apply globally. This visual change does not change launch readiness or introduce a paid dependency.
 
 Verification: local lint, TypeScript and changed-file formatting checks passed. Both desktop and mobile motion browser tests passed, including reduced motion and usable login inputs on a non-public page. Homepage and mobile login screenshots were visually reviewed. No database changes or backend test runs were needed for this visual follow-up.

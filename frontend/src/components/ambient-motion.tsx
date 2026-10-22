@@ -16,7 +16,7 @@ export function AmbientMotion() {
               left: `${(i * 37 + 7) % 100}%`,
               top: `${(i * 23 + 11) % 100}%`,
               animationDelay: `-${i * 2.3}s`,
-              animationDuration: `${22 + (i % 5) * 4}s`,
+              animationDuration: `${36 + (i % 5) * 6}s`,
             }}
           />
         ))}
