@@ -677,7 +677,11 @@ export function Checkout({ event }: { event: EventRecord }) {
             )}
             {step === 3 && order && (
               <>
-                <Pill>TEST PAYMENT CONFIRMED</Pill>
+                <Pill>
+                  {fullyDiscounted
+                    ? "FREE TICKETS CONFIRMED"
+                    : "TEST PAYMENT CONFIRMED"}
+                </Pill>
                 <h2>You’re on the list.</h2>
                 <p>
                   {order.quantity} ticket(s) issued for {order.recipient_email}

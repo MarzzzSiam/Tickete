@@ -14,7 +14,7 @@ The new coupon table has row-level security enabled and browser-role privileges 
 
 ## 2026-10-25 — 100% coupons
 
-Expanded the percentage range to 100 and allowed zero-total orders. Full-discount issuance uses the same transaction and event/category locks as normal checkout, consumes inventory immediately and preserves per-email caps, idempotency, gift delivery and reporting. Paid/fulfilled orders retain the existing internal `paid` status for downstream compatibility; no payment record is created for a 100% coupon. Pausing blocks later use but cannot invalidate already-issued tickets. Verification pending.
+Expanded the percentage range to 100 and allowed zero-total orders. Full-discount issuance uses the same transaction and event/category locks as normal checkout, consumes inventory immediately and preserves per-email caps, idempotency, gift delivery and reporting. Paid/fulfilled orders retain the existing internal `paid` status for downstream compatibility; no payment record is created for a 100% coupon. Pausing blocks later use but cannot invalidate already-issued tickets. [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/40190469711) passed 152 backend and 32 desktop/mobile browser tests on commit `16a7c71`, plus production build, lint, formatting, types and schema checks. Both new constraint migrations (events 0004 and orders 0002) are applied to Supabase with none pending. No real orders were created by these tests.
 
 ## Verification
 
