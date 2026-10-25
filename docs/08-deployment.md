@@ -1,6 +1,6 @@
 # Deployment plan
 
-No deployment exists yet. Intended frontend: Vercel with root `frontend`; backend and Celery: a separate host close to Bangladesh; PostgreSQL/Storage: Supabase; queue: Redis; email: verified transactional provider.
+2026-10-25: free submission deployment is being prepared; follow the [current deployment configuration](21-free-submission-deployment.md). Public URLs and live acceptance are still pending. The rest of this document records the original production planning considerations.
 
 Local: isolated development database, fictional fixtures, dummy gateway and console email. Staging: separate database, storage buckets, secrets, sender and approved testers. Production: paid capacity chosen from measured load, verified domain and backups. Never point development tests at production.
 

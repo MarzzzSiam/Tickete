@@ -1,15 +1,14 @@
-FROM python:3.12-slim
-ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
-WORKDIR /app
+FROM python:3.12-slim-bookworm
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1 PIP_NO_CACHE_DIR=1
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
-    fonts-dejavu-core fonts-liberation \
+    libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 libjpeg62-turbo \
+    libopenjp2-7 fonts-dejavu-core fonts-liberation \
     && rm -rf /var/lib/apt/lists/*
-COPY requirements/production.txt requirements/production.txt
-RUN pip install --no-cache-dir -r requirements/production.txt
+WORKDIR /app
+COPY requirements/ requirements/
+RUN pip install -r requirements/production.txt
 COPY . .
-RUN useradd --create-home app && chown -R app:app /app
-USER app
+RUN useradd --create-home tickete && chown -R tickete:tickete /app
+USER tickete
 ENV DJANGO_SETTINGS_MODULE=config.settings.production
-EXPOSE 8000
-CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "60", "--access-logfile", "-"]
+CMD ["python", "deploy.py"]

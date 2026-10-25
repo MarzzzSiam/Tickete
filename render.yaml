@@ -1,0 +1,43 @@
+# Submission demo: a single free service; no paid background worker.
+services:
+  - type: web
+    name: tickete-api
+    runtime: docker
+    plan: free
+    region: singapore
+    rootDir: backend
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/v1/health/
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: TRUST_PROXY_SSL_HEADER
+        value: "True"
+      - key: DB_CONN_MAX_AGE
+        value: "0"
+      - key: STORAGE_BACKEND
+        value: supabase
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_SERVICE_KEY
+        sync: false
+      - key: SUPABASE_PRIVATE_BUCKET
+        value: tickets
+      - key: EMAIL_PROVIDER
+        value: brevo
+      - key: BREVO_API_KEY
+        sync: false
+      - key: DEFAULT_FROM_EMAIL
+        value: TICKETÉ <hello.tickete@gmail.com>
+      - key: SUPPORT_EMAIL
+        value: hello.tickete@gmail.com

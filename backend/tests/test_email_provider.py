@@ -29,3 +29,18 @@ def test_email_payload_and_safe_errors():
 def test_email_fails_closed_without_credentials():
     with pytest.raises(ImproperlyConfigured):
         BrevoEmailBackend().send_messages([])
+
+
+@override_settings(BREVO_API_KEY="fictional-test-key")
+def test_pdf_attachment_is_encoded_without_public_file_url():
+    from base64 import b64decode
+
+    message = EmailMessage("Tickets", "Your tickets", "sender@example.com", ["buyer@example.com"])
+    pdf = b"%PDF-1.7\nprivate ticket bytes\x00\xff"
+    message.attach("tickets.pdf", pdf, "application/pdf")
+    with patch("httpx.post") as post:
+        assert BrevoEmailBackend().send_messages([message]) == 1
+        attachment = post.call_args.kwargs["json"]["attachment"][0]
+        assert attachment["name"] == "tickets.pdf"
+        assert b64decode(attachment["content"]) == pdf
+        assert "url" not in attachment

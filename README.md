@@ -4,6 +4,8 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-25 — Free submission deployment preparation: Vercel frontend with same-origin API forwarding, a single Render Free web instance running API/account-email/ticket processors, persistent Supabase Storage and Brevo HTTPS PDF email support. Updated Next.js and its ESLint config to 16.4.3 following security advisories; npm audit reports zero vulnerabilities. Production build, lint, types and three mocked email tests pass locally. Public deployment and acceptance checks are pending. This setup needs no local PC but is subject to idle sleep and free quotas. See [deployment setup](docs/21-free-submission-deployment.md).
+
 2026-10-25 — Expanded event coupons to 1–100%. A valid 100% coupon confirms tickets and queues PDF/email delivery immediately without a payment/OTP attempt; inventory and buyer caps still apply. Zero-priced categories remain excluded. [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/40190469711) passed 152 backend and 32 browser tests, build, lint, formatting, types and schema checks. Both Supabase constraint migrations are applied with none pending.
 
 2026-10-23 — Coupon verification complete: [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/39813813045) passed 151 backend tests and 32 desktop/mobile browser tests, production build, lint, formatting, types and API schema validation. Supabase coupon migration is applied with none pending; RLS and denied browser-role reads were verified. Coupon owner/checkout screenshots reviewed. See [coupon usage](docs/20-event-coupons.md). Production launch acceptance and real payment integration remain outside this feature increment.

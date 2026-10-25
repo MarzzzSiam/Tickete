@@ -3,6 +3,17 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   devIndicators: false,
   poweredByHeader: false,
+  skipTrailingSlashRedirect: true,
+  // Keep browser auth cookies first-party when API and UI use different hosts.
+  // API_BASE_URL remains absolute for server-rendered event requests.
+  async rewrites() {
+    const origin = process.env.BACKEND_ORIGIN?.replace(/\/$/, "");
+    if (!origin) return [];
+    if (!origin.startsWith("https://")) {
+      throw new Error("BACKEND_ORIGIN must use HTTPS");
+    }
+    return [{ source: "/api/:path*", destination: `${origin}/api/:path*` }];
+  },
   async headers() {
     return [
       {

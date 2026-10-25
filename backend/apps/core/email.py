@@ -1,3 +1,4 @@
+from base64 import b64encode
 from smtplib import SMTPAuthenticationError, SMTPException, SMTPServerDisconnected
 
 from django.core.exceptions import ImproperlyConfigured
@@ -66,16 +67,28 @@ class BrevoEmailBackend(BaseEmailBackend):
             name, sender = parseaddr(message.from_email)
             if not sender or sender.endswith(".invalid"):
                 raise ImproperlyConfigured("Set DEFAULT_FROM_EMAIL to your verified sender.")
-            if message.attachments or message.cc or message.bcc:
-                raise ImproperlyConfigured(
-                    "This account-email adapter does not yet support attachments, CC or BCC."
-                )
+            if message.cc or message.bcc:
+                raise ImproperlyConfigured("This email adapter does not support CC or BCC.")
             payload = {
                 "sender": {"email": sender, "name": name or "TICKETÉ"},
                 "to": [{"email": address} for address in message.to],
                 "subject": message.subject,
                 "textContent": message.body,
             }
+            if message.attachments:
+                attachments = []
+                for attachment in message.attachments:
+                    if not isinstance(attachment, tuple) or len(attachment) != 3:
+                        raise ImproperlyConfigured("Only named file attachments are supported.")
+                    filename, content, _ = attachment
+                    if not filename:
+                        raise ImproperlyConfigured("Email attachments require a filename.")
+                    if isinstance(content, str):
+                        content = content.encode(message.encoding or "utf-8")
+                    attachments.append(
+                        {"name": filename, "content": b64encode(content).decode("ascii")}
+                    )
+                payload["attachment"] = attachments
             for content, mimetype in getattr(message, "alternatives", []):
                 if mimetype == "text/html":
                     payload["htmlContent"] = content

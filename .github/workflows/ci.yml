@@ -45,6 +45,8 @@ jobs:
       - run: python manage.py migrate --noinput
       - run: python manage.py spectacular --file /tmp/openapi.yaml --validate --fail-on-warn
       - run: pytest --cov=apps --cov-report=term-missing
+      - name: Build hosted API image
+        run: docker build -t tickete-api:ci .
   frontend:
     runs-on: ubuntu-latest
     env:
