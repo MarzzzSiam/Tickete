@@ -46,7 +46,7 @@ export function CouponFields({
           className="field-input"
           type="number"
           min={1}
-          max={99}
+          max={100}
           step={1}
           value={value.percentage}
           disabled={disabled}
@@ -134,7 +134,7 @@ export function EventCoupons({
       <h2 id="coupons-heading">Event coupons</h2>
       <p>
         Up to three codes per event, including paused codes. One code per order,
-        1–99% off. Codes and percentages stay fixed after creation.
+        1–100% off. Codes and percentages stay fixed after creation.
       </p>
       {error && (
         <p role="alert" className="auth-error">

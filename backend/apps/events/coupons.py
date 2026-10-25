@@ -17,7 +17,7 @@ from .models import Coupon, Event
 
 class CouponInput(StrictSerializer):
     code = serializers.RegexField(r"^[A-Za-z0-9_-]{1,32}$", max_length=32)
-    percentage = serializers.IntegerField(min_value=1, max_value=99)
+    percentage = serializers.IntegerField(min_value=1, max_value=100)
 
     def validate_code(self, value):
         return value.upper()
@@ -100,7 +100,7 @@ def discounted_total(event, subtotal, code):
             Decimal("0.01"), rounding=ROUND_HALF_UP
         )
     total = subtotal - discount
-    if total <= 0:
+    if total < 0 or (total == 0 and (not coupon or coupon.percentage != 100)):
         raise ValidationError("The discounted total must be at least BDT 0.01.")
     return {
         "subtotal": str(subtotal),

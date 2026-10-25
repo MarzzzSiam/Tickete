@@ -6,6 +6,7 @@ test("owner creates and pauses a coupon; checkout uses the discounted total", as
   page,
   browser,
 }, info) => {
+  test.setTimeout(60000);
   test.skip(process.env.AUTH_E2E_LIVE !== "1", "Disposable CI services only.");
   const id = execFileSync(
     "python",
@@ -120,5 +121,39 @@ print(str(event.pk)+'|'+event.slug)
   await expect(
     buyer.getByRole("alert").filter({ hasText: "invalid or paused" }),
   ).toBeVisible();
+  await page.getByLabel("Add an optional coupon").check();
+  await page.getByLabel("Coupon code", { exact: true }).fill("FREE100");
+  await page.getByLabel("Percentage off", { exact: true }).fill("100");
+  await page
+    .getByRole("button", { name: "Create coupon", exact: true })
+    .click();
+  await expect(
+    page.getByRole("button", { name: "Pause FREE100" }),
+  ).toBeVisible();
+  await buyer.getByLabel("Any coupon code? (optional)").fill("free100");
+  await buyer
+    .getByRole("button", { name: "Apply coupon", exact: true })
+    .click();
+  await expect(buyer.locator(".checkout-total")).toHaveText("BDT 0.00");
+  await buyer.getByRole("button", { name: "Continue to details" }).click();
+  await buyer
+    .getByLabel("Email address", { exact: true })
+    .fill(`free-${info.project.name}@example.com`);
+  await buyer
+    .getByRole("button", { name: "Confirm free tickets", exact: true })
+    .click();
+  await expect(
+    buyer.getByRole("heading", { name: "You’re on the list." }),
+  ).toBeVisible();
+  await expect(buyer.getByLabel("Test phone number")).toHaveCount(0);
+  await buyer.reload();
+  await expect(
+    buyer.getByRole("heading", { name: "You’re on the list." }),
+  ).toBeVisible();
+  await expect(buyer.locator(".checkout-total")).toHaveText("BDT 0.00");
+  await buyer.screenshot({
+    path: `../docs/screenshots/coupons-free-${info.project.name}.png`,
+    fullPage: true,
+  });
   await guest.close();
 });

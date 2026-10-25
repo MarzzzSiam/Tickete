@@ -49,7 +49,7 @@ def test_creation_limits_duplicate_normalization_and_draft_atomicity(event):
     assert "coupons" not in PublicEventSerializer(event).data
 
 
-@pytest.mark.parametrize("percentage", [0, -1, 100, 101, 10.5])
+@pytest.mark.parametrize("percentage", [0, -1, 101, 10.5])
 def test_percentage_validation(percentage):
     with pytest.raises(ValidationError):
         coupon_data(percentage=percentage)
@@ -203,3 +203,49 @@ def test_checkout_rejects_client_prices_and_quote_duplicate_categories(event, ca
         }
     )
     assert not quote.is_valid()
+
+
+def test_full_discount_confirms_once_without_payment(event, category):
+    from apps.events.reporting import snapshot
+    from apps.orders.services import result
+    from apps.tickets.models import TicketDelivery
+
+    coupon = create_coupon(event.owner, event.pk, coupon_data("FREE100", 100))
+    payload = test_orders.data(
+        event,
+        category,
+        quantity=2,
+        coupon_code="free100",
+        is_gift=True,
+        recipient_email="gift@example.com",
+    )
+    quote = quote_coupon(payload)
+    assert quote["total"] == "0.00" and quote["discount"] == "1000.00"
+    order = create_order(payload)
+    assert order.total == 0 and order.status == "paid"
+    assert order.tickets.count() == 2 and order.holds.get().status == "converted"
+    assert order.tickets.filter(recipient_email="gift@example.com").count() == 2
+    assert TicketDelivery.objects.filter(order=order).exists()
+    assert result(order)["payment"] is None and not Payment.objects.filter(order=order).exists()
+    assert create_order(payload).pk == order.pk
+    assert test_orders.pay(order, payload["access_token"]).tickets.count() == 2
+    category.refresh_from_db()
+    assert category.sold_count == 2
+    report = snapshot(event)
+    assert report["sold"] == 2 and Decimal(report["revenue"]) == 0
+    toggle_coupon(event.owner, event.pk, coupon.pk, False)
+    order.refresh_from_db()
+    assert order.status == "paid" and order.tickets.filter(status="valid").count() == 2
+    with pytest.raises(ValidationError):
+        create_order(test_orders.data(event, category, coupon_code=coupon.code))
+
+
+def test_full_discount_still_enforces_buyer_limit(event, category):
+    from apps.orders.services import CheckoutConflict
+
+    create_coupon(event.owner, event.pk, coupon_data("FREE100", 100))
+    event.max_per_order = 1
+    event.save()
+    create_order(test_orders.data(event, category, coupon_code="FREE100"))
+    with pytest.raises(CheckoutConflict):
+        create_order(test_orders.data(event, category, coupon_code="FREE100"))
