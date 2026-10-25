@@ -38,7 +38,7 @@ class Order(models.Model):
     class Meta:
         indexes = [models.Index(fields=["event", "buyer_email", "status"])]
         constraints = [
-            models.CheckConstraint(condition=Q(total__gt=0), name="order_positive_total"),
+            models.CheckConstraint(condition=Q(total__gte=0), name="order_nonnegative_total"),
             models.CheckConstraint(condition=Q(quantity__gt=0), name="order_positive_quantity"),
         ]
 

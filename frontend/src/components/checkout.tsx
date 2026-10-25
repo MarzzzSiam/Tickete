@@ -111,6 +111,7 @@ export function Checkout({ event }: { event: EventRecord }) {
       ? quote
       : null;
   const pricing = order?.snapshot || appliedQuote;
+  const fullyDiscounted = pricing?.coupon?.percentage === 100;
 
   async function applyCoupon() {
     setQuote(null);
@@ -335,7 +336,12 @@ export function Checkout({ event }: { event: EventRecord }) {
         {event.title} · {dhakaTime(event.starts_at)} · Asia/Dhaka
       </p>
       <ol className="checkout-steps" aria-label="Checkout progress">
-        {["Tickets", "Details", "Payment", "Done"].map((label, i) => (
+        {[
+          "Tickets",
+          "Details",
+          fullyDiscounted ? "No payment" : "Payment",
+          "Done",
+        ].map((label, i) => (
           <li key={label} aria-current={step === i ? "step" : undefined}>
             <span>{i + 1}</span>
             {label}
@@ -360,8 +366,8 @@ export function Checkout({ event }: { event: EventRecord }) {
               <>
                 <h2>Choose your tickets</h2>
                 <p>
-                  Availability is confirmed when you reserve. Free tickets are
-                  not available yet.
+                  Availability is confirmed when you reserve. A 100% coupon
+                  confirms your tickets without payment.
                 </p>
                 {categories.map((c) => (
                   <div className="checkout-category" key={c.id}>
@@ -526,12 +532,16 @@ export function Checkout({ event }: { event: EventRecord }) {
                       </label>
                     ))}
                     <p>
-                      We’ll hold these tickets for up to 10 minutes, or until
-                      sales close. Your email’s paid and reserved tickets count
-                      toward the event limit.
+                      {fullyDiscounted
+                        ? "Your tickets will be confirmed immediately without payment."
+                        : "We’ll hold these tickets for up to 10 minutes, or until sales close."}{" "}
+                      Your email’s confirmed and reserved tickets count toward
+                      the event limit.
                     </p>
                     <Button type="submit" loading={busy}>
-                      Reserve tickets
+                      {fullyDiscounted
+                        ? "Confirm free tickets"
+                        : "Reserve tickets"}
                     </Button>
                     <Button
                       type="button"
@@ -786,6 +796,11 @@ export function Checkout({ event }: { event: EventRecord }) {
                   {pricing.discount}
                 </p>
               </div>
+            )}
+            {fullyDiscounted && (
+              <p className="auth-notice">
+                100% discount — no payment required.
+              </p>
             )}
             <strong className="checkout-total">
               BDT {order?.total ?? appliedQuote?.total ?? total.toFixed(2)}

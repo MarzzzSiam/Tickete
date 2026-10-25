@@ -1,5 +1,7 @@
 # Changelog
 
+2026-10-25 — Added 100% coupons with immediate no-payment ticket issuance and normal queued PDF/email delivery. Inventory, purchase caps and pause rules remain enforced.
+
 2026-10-23 — Coupon feature verified: 151 backend and 32 browser tests passed; Supabase migration applied, none pending, coupon-table privacy verified. See `20-event-coupons.md`.
 
 2026-10-22 — Added optional event coupons, owner-only management, server-calculated order discounts and atomic pause behavior. Verification and migration status: `20-event-coupons.md`.

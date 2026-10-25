@@ -4,6 +4,8 @@ Event ticketing for Bangladesh. One monorepo with a Django REST Framework backen
 
 ## Current status
 
+2026-10-25 — Expanded event coupons to 1–100%. A valid 100% coupon confirms tickets and queues PDF/email delivery immediately without a payment/OTP attempt; inventory and buyer caps still apply. Zero-priced categories remain excluded. Verification and database constraint updates are in progress.
+
 2026-10-23 — Coupon verification complete: [CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/39813813045) passed 151 backend tests and 32 desktop/mobile browser tests, production build, lint, formatting, types and API schema validation. Supabase coupon migration is applied with none pending; RLS and denied browser-role reads were verified. Coupon owner/checkout screenshots reviewed. See [coupon usage](docs/20-event-coupons.md). Production launch acceptance and real payment integration remain outside this feature increment.
 
 2026-10-22 — Event coupons implemented for verification: optional creation fields, owner-only add/pause/resume controls, up to three codes per event and backend-calculated percentage discounts at checkout. Pausing expires unpaid coupon reservations while preserving paid tickets. Isolated CI and the additive migration are pending; see [event coupons](docs/20-event-coupons.md).

@@ -117,7 +117,7 @@ class Coupon(models.Model):
         constraints = [
             models.UniqueConstraint(fields=["event", "code"], name="unique_event_coupon"),
             models.CheckConstraint(
-                condition=models.Q(percentage__gte=1, percentage__lte=99),
+                condition=models.Q(percentage__gte=1, percentage__lte=100),
                 name="coupon_percentage_range",
             ),
         ]

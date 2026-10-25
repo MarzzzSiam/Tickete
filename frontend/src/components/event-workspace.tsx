@@ -418,7 +418,7 @@ function EventEditor({
               {couponsEnabled && (
                 <>
                   <p>
-                    Up to three codes, 1–99% off. You can pause or add codes
+                    Up to three codes, 1–100% off. You can pause or add codes
                     after saving.
                   </p>
                   {coupons.map((coupon, index) => (

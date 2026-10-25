@@ -4,13 +4,17 @@
 
 Owners can optionally enable coupons in the Tickets step when creating an event. After saving, the event workspace has separate coupon controls, including for approved events. Managers, scanners, viewers, admins and other owners cannot manage another owner's coupons. Codes are not listed on public event responses.
 
-Each event allows up to three codes total, including paused codes. Codes use 1–32 ASCII letters, digits, underscores or hyphens and are case-insensitive. Discounts are whole percentages from 1 through 99; free tickets remain excluded. Codes and percentages are fixed once created; owners can pause/resume. Closed events reject coupon changes.
+Each event allows up to three codes total, including paused codes. Codes use 1–32 ASCII letters, digits, underscores or hyphens and are case-insensitive. Discounts are whole percentages from 1 through 100; zero-priced ticket categories remain excluded. Codes and percentages are fixed once created; owners can pause/resume. Closed events reject coupon changes.
 
-Checkout accepts one optional code for the entire order. Apply coupon requests a server-calculated quote; reservation recalculates the discount against current category prices and coupon state. Amounts use decimal arithmetic, with the order-wide discount rounded half-up to two decimal places. Totals below BDT 0.01 are rejected. The order snapshots subtotal, discount, code and percentage; payments, receipts and revenue reports use the discounted order total. Existing orders without coupon snapshots remain supported.
+Checkout accepts one optional code for the entire order. Apply coupon requests a server-calculated quote; reservation recalculates the discount against current category prices and coupon state. Amounts use decimal arithmetic, with the order-wide discount rounded half-up to two decimal places. A 100% coupon confirms a zero-total order immediately, issues tickets and queues delivery without creating a payment attempt. Other coupons must leave a total of at least BDT 0.01. The order snapshots subtotal, discount, code and percentage; payments, receipts and revenue reports use the discounted order total. Existing orders without coupon snapshots remain supported.
 
 Pausing takes the same event lock as payment and checkout, immediately expires unpaid coupon reservations, releases their seats and fails initiated simulated payments. Paid tickets remain valid. Resuming never revives expired reservations: customers start a fresh checkout. Creation also uses the event lock to enforce the three-code cap under concurrency. Changes are audited.
 
 The new coupon table has row-level security enabled and browser-role privileges revoked. No paid services are introduced. Payment remains simulated.
+
+## 2026-10-25 — 100% coupons
+
+Expanded the percentage range to 100 and allowed zero-total orders. Full-discount issuance uses the same transaction and event/category locks as normal checkout, consumes inventory immediately and preserves per-email caps, idempotency, gift delivery and reporting. Paid/fulfilled orders retain the existing internal `paid` status for downstream compatibility; no payment record is created for a 100% coupon. Pausing blocks later use but cannot invalidate already-issued tickets. Verification pending.
 
 ## Verification
 

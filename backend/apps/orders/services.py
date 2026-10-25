@@ -207,6 +207,8 @@ def _create_order(data, user):
             for item in data["selections"]
         ]
     )
+    if total == 0:
+        complete_order(order, list(categories.values()))
     return order
 
 
@@ -279,6 +281,12 @@ def verify_payment(order_id, token, otp):
     if any(hold.status != "active" or hold.expires_at <= timezone.now() for hold in holds):
         release(order, "expired")
         return order
+    return complete_order(order, categories, payment)
+
+
+def complete_order(order, categories, payment=None):
+    """Issue once while the caller holds the event/category locks and transaction."""
+    holds = list(order.holds.all())
     by_id = {c.id: c for c in categories}
     for hold in holds:
         category = by_id[hold.category_id]
@@ -306,9 +314,10 @@ def verify_payment(order_id, token, otp):
     order.status = "paid"
     order.paid_at = timezone.now()
     order.save(update_fields=["status", "paid_at"])
-    payment.status = "success"
-    payment.verified_at = order.paid_at
-    payment.save(update_fields=["status", "verified_at", "attempts"])
+    if payment is not None:
+        payment.status = "success"
+        payment.verified_at = order.paid_at
+        payment.save(update_fields=["status", "verified_at", "attempts"])
     TicketDelivery.objects.get_or_create(order=order)
     return order
 
