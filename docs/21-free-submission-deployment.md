@@ -1,6 +1,23 @@
 # Free submission deployment
 
-2026-10-25: deployment preparation in progress. No public URL has been verified yet.
+2026-10-26: frontend and API deployed; live authentication checks passed.
+
+- Website: https://tickete-ten.vercel.app
+- API: https://tickete-api.onrender.com/api/v1/health/
+- Vercel project: `marzzz1/tickete`, Hobby, production branch `main`.
+- Render: `tickete-api`, Free, Singapore, service `srv-dbf4gkavcj2c73eq8s70`.
+- Six local media files copied to the private Supabase bucket and byte-verified.
+- [Deployment CI](https://github.com/MarzzzSiam/TICKETE/actions/runs/40218861071) passed,
+  including the Docker build. Next.js is patched to 16.4.3.
+- Brevo accepted one approved sample PDF email; recipient inbox confirmation remains external.
+- Hosted Celery completed a worker ping. Public events and a stored banner load correctly.
+- The API proxy explicitly appends Django endpoint slashes and preserves the slashless PDF route.
+- Verified application revision: `5d9271f`. Signup, login, authenticated profile, logout
+  and session clearing passed through the public Vercel origin. Cookie Secure,
+  HttpOnly and SameSite=Lax flags were checked. The temporary account was removed.
+- Checkout ticket/category/coupon controls render on the deployed site. A fresh full
+  hosted purchase-to-email-to-check-in has not been performed; existing event stock
+  was not consumed for deployment verification.
 
 ## Services
 
@@ -27,8 +44,8 @@ Never commit `.env`, service keys, email API keys, passwords or live connection 
 
 Render:
 
-- `ALLOWED_HOSTS`: exact Render API hostname, without scheme.
-- `FRONTEND_ORIGIN`: stable Vercel production URL, including `https://`, no trailing slash.
+- `ALLOWED_HOSTS=tickete-api.onrender.com`.
+- `FRONTEND_ORIGIN=https://tickete-ten.vercel.app` (no trailing slash).
 - `SECRET_KEY`: new strong secret (at least 50 characters), not the local development key.
 - `DATABASE_URL`: Supabase session pooler URL with `sslmode=require`.
 - `REDIS_URL`: existing Redis/Valkey connection URL.
@@ -40,8 +57,8 @@ Render:
 
 Vercel (production environment):
 
-- `BACKEND_ORIGIN=https://<actual-api-host>`
-- `API_BASE_URL=https://<actual-api-host>/api/v1`
+- `BACKEND_ORIGIN=https://tickete-api.onrender.com`
+- `API_BASE_URL=https://tickete-api.onrender.com/api/v1`
 - `NEXT_PUBLIC_API_BASE_URL=/api/v1`
 
 The browser uses a same-origin Next.js rewrite so secure authentication cookies stay
@@ -53,15 +70,17 @@ directory is served; private files continue through authenticated API endpoints.
 Existing local banners/PDF files must be copied to the private bucket with their
 existing relative keys before switching storage, without changing ownership or ACLs.
 
-## Acceptance before submission
+## Verification record and final manual acceptance
 
-- API health, frontend and approved events load over HTTPS.
-- Existing banners load from persistent Storage.
-- Signup/login/logout, verification and CSRF work through the frontend proxy.
-- Test purchase confirms, stock/caps apply, PDF downloads and arrives by email.
-- Organizer reports and volunteer check-in reject a reused ticket.
-- No paid resource, real payment gateway or local-PC dependency is introduced.
-- Record actual URLs, tested revision and outstanding limitations in README.
+- Verified: API/proxy health, frontend and approved events load over HTTPS.
+- Verified: existing event banner loads from persistent Storage.
+- Verified: signup/login/logout and CSRF through the frontend proxy.
+- Verified: background worker ping and Brevo acceptance of the approved sample PDF.
+- Manual: recipient confirms inbox receipt; complete a fresh simulated purchase,
+  download its PDF and check it in once, then confirm duplicate-entry rejection.
+- Manual: verification/reset links and organizer reports with the owner's account.
+- No paid resource, real payment gateway or local-PC dependency was introduced.
+- Actual URLs, tested revision and free-tier limitations are recorded in README.
 
 References: [Render free limits](https://render.com/docs/free),
 [Brevo attachment API](https://developers.brevo.com/reference/send-transac-email).
