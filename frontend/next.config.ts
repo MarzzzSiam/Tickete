@@ -12,7 +12,15 @@ const nextConfig: NextConfig = {
     if (!origin.startsWith("https://")) {
       throw new Error("BACKEND_ORIGIN must use HTTPS");
     }
-    return [{ source: "/api/:path*", destination: `${origin}/api/:path*` }];
+    return [
+      {
+        source: "/api/v1/orders/:id/tickets.pdf",
+        destination: `${origin}/api/v1/orders/:id/tickets.pdf`,
+      },
+      // Next's wildcard omits the incoming trailing slash. Django endpoints
+      // require it, so include it explicitly to avoid redirect loops on POST.
+      { source: "/api/:path*", destination: `${origin}/api/:path*/` },
+    ];
   },
   async headers() {
     return [
