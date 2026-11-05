@@ -335,11 +335,5 @@ Manual evaluation should cover verification, event submission/approval, normal a
 
 Early notes may contain historical proposals. Use this overview, current implementation and deployment guide for the final setup. The project report contains the detailed development journal.
 
-## Developer team
-
-| Name | Student ID |
-| --- | --- |
-| Marzan Ahmed | 22201055 |
-| Faiza Ahmed Esha | 22201121 |
-| Md Daudul Islam | 22201088 |
-| Tanjina Akter Nisa | 22201086 |
+---
+© Marzan Ahmed 2026
